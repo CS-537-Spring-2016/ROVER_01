@@ -35,6 +35,8 @@ public class RoverLocations {
 		
 		// test rovers
 		roverHash.put(RoverName.ROVER_00, new Coord(4,20));
+		//changed by group 1, initial rover location
+		roverHash.put(RoverName.ROVER_01, new Coord(4,20));
 		roverHash.put(RoverName.ROVER_99, new Coord(4,7));
 	}
 	
