@@ -157,7 +157,8 @@ public class ROVER_01 {
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.SAND
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.NONE) {
 						blocked = true;
-					} else {
+					} 
+					}  else {
 						// request to server to move
 						out.println("MOVE S");
 						//System.out.println("ROVER_01 request move S");
@@ -173,7 +174,8 @@ public class ROVER_01 {
 							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.SAND
 							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.NONE) {
 						blocked = true;
-					} else {
+					}
+					else {
 						// request to server to move
 						out.println("MOVE N");
 						//System.out.println("ROVER_01 request move N");
