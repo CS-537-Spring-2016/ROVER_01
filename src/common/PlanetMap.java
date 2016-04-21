@@ -54,6 +54,15 @@ public class PlanetMap {
 		this.planetMap[26][11] = new MapTile("S");
 		this.planetMap[26][12] = new MapTile("S");
 		this.planetMap[26][13] = new MapTile("S");
+		
+		//adding gravels on the map for testing f treads fucntionality
+		this.planetMap[10][10] = new MapTile("G");
+		this.planetMap[10][11] = new MapTile("G");
+		this.planetMap[11][10] = new MapTile("G");
+		this.planetMap[11][11] = new MapTile("G");
+		this.planetMap[12][10] = new MapTile("G");
+		this.planetMap[12][11] = new MapTile("G");
+		
 	}
 	
 	public PlanetMap(String filename){
