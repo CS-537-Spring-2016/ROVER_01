@@ -18,7 +18,6 @@ import common.MapTile;
 import common.ScanMap;
 import enums.Terrain;
 
-//pratice session
 public class ROVER_01 {
 
 	BufferedReader in;

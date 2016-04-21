@@ -16,6 +16,19 @@ public class PlanetMap {
 			}
 		}
 		// temporary use for creating planet terrain for testing
+		this.planetMap[0][17] = new MapTile("G"); 
+		this.planetMap[0][18] = new MapTile("G"); 
+		this.planetMap[1][17] = new MapTile("G"); 
+		this.planetMap[1][18] = new MapTile("G");
+		this.planetMap[16][0] = new MapTile("G"); 
+		this.planetMap[17][0] = new MapTile("G"); 
+		this.planetMap[18][0] = new MapTile("G"); 
+		this.planetMap[16][0] = new MapTile("G"); 
+		this.planetMap[17][1] = new MapTile("G"); 
+		this.planetMap[18][1] = new MapTile("G");
+		
+		
+		
 		this.planetMap[7][7] = new MapTile("R"); 
 		this.planetMap[7][8] = new MapTile("R"); 
 		this.planetMap[8][7] = new MapTile("R"); 
