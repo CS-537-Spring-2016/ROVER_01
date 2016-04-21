@@ -33,6 +33,9 @@ public class MapTile {
 		} else if(terrainLetter.equals("S")){
 			this.terrain = Terrain.SAND;
 		}
+		else if(terrainLetter.equals("G")){
+			this.terrain = Terrain.GRAVEL;
+		}
 		
 		this.science = Science.NONE;
 		this.elevation = 0;
