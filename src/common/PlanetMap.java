@@ -36,6 +36,13 @@ public class PlanetMap {
 		this.planetMap[8][24] = new MapTile("R");
 		this.planetMap[8][25] = new MapTile("R");
 		
+		this.planetMap[3][15] = new MapTile("S");
+		this.planetMap[3][13] = new MapTile("S");
+		this.planetMap[3][14] = new MapTile("S");
+		this.planetMap[4][15] = new MapTile("S");
+		this.planetMap[4][16] = new MapTile("S");
+		this.planetMap[5][15] = new MapTile("S");
+		
 		this.planetMap[24][10] = new MapTile("S");
 		this.planetMap[24][11] = new MapTile("S");
 		this.planetMap[24][12] = new MapTile("S");
