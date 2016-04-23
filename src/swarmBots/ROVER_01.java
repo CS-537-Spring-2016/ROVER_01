@@ -75,6 +75,9 @@ public class ROVER_01 {
 		String line = "";
 
 		boolean goingSouth = false;
+		boolean goingNorth = false;
+		boolean goingEast = false;
+		boolean goingWest = false;
 		boolean stuck = false; // just means it did not change locations between requests,
 								// could be velocity limit or obstruction etc.
 		boolean blocked = false;
@@ -215,13 +218,13 @@ public class ROVER_01 {
 				if(goingSouth){
 					goingSouth = false;
 				}
-				else if(north){
+				else if(goingNorth){
 					//go south
 				}
-				else if(east){
+				else if(goingEast){
 					//go west
 				}
-				else if(west){
+				else if(goingWest){
 					//go east
 					
 				}
