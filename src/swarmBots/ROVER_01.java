@@ -161,12 +161,13 @@ public class ROVER_01 {
 					//added newly group 1, if SAND then dont step on it
 					if (scanMapTiles[centerIndex][centerIndex +1].getHasRover() 
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.SAND
+							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.ROCK
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.NONE) {
 						blocked = true;
 					} else {
 						// request to server to move
 						out.println("MOVE S");
-						//System.out.println("ROVER_01 request move S");
+						System.out.println("ROVER_01 request move S");
 					}
 					
 				} else {
@@ -177,6 +178,7 @@ public class ROVER_01 {
 					//added newly group 1, if SAND then dont step on it
 					if (scanMapTiles[centerIndex][centerIndex -1].getHasRover() 
 							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.SAND
+							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.ROCK
 							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.NONE) {
 						blocked = true;
 					} else {
@@ -204,7 +206,7 @@ public class ROVER_01 {
 			// test for stuckness
 			stuck = currentLoc.equals(previousLoc);
 
-			//System.out.println("ROVER_01 stuck test " + stuck);
+			System.out.println("ROVER_01 stuck test " + stuck);
 			System.out.println("ROVER_01 blocked test " + blocked);
 
 			// TODO - logic to calculate where to move next
