@@ -18,12 +18,6 @@ import common.MapTile;
 import common.ScanMap;
 import enums.Terrain;
 
-/**
- * The seed that this program is built on is a chat program example found here:
- * http://cs.lmu.edu/~ray/notes/javanetexamples/ Many thanks to the authors for
- * publishing their code examples
- */
-
 public class ROVER_01 {
 
 	BufferedReader in;
@@ -164,7 +158,11 @@ public class ROVER_01 {
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.ROCK
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.NONE) {
 						blocked = true;
-					} else {
+					} else if (scanMapTiles[centerIndex][centerIndex +1].getHasRover() 
+							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.FLUID) {
+						blocked = true;
+					} 
+					 else {
 						// request to server to move
 						out.println("MOVE S");
 						System.out.println("ROVER_01 request move S");
@@ -180,6 +178,9 @@ public class ROVER_01 {
 							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.SAND
 							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.ROCK
 							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.NONE) {
+						blocked = true;
+					} else if (scanMapTiles[centerIndex][centerIndex -1].getHasRover() 
+							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.FLUID) {
 						blocked = true;
 					} else {
 						// request to server to move

@@ -32,6 +32,10 @@ public class MapTile {
 			this.terrain = Terrain.ROCK;			
 		} else if(terrainLetter.equals("S")){
 			this.terrain = Terrain.SAND;
+		} else if(terrainLetter.equals("G")){
+			this.terrain = Terrain.GRAVEL;
+		} else if(terrainLetter.equals("F")){
+			this.terrain = Terrain.FLUID;
 		}
 		
 		this.science = Science.NONE;
