@@ -1,4 +1,4 @@
-package swarmBots;
+	package swarmBots;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -110,7 +110,7 @@ public class ROVER_01 {
 			System.out.println("ROVER_01 currentLoc at start: " + currentLoc);
 			
 			// after getting location set previous equal current to be able to check for stuckness and blocked later
-			previousLoc = currentLoc;
+			//previousLoc = currentLoc;
 			
 			
 			
@@ -155,6 +155,7 @@ public class ROVER_01 {
 					//added newly group 1, if SAND then dont step on it
 					if (scanMapTiles[centerIndex][centerIndex +1].getHasRover() 
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.SAND
+							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.ROCK
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.NONE) {
 						blocked = true;
 					} else if (scanMapTiles[centerIndex][centerIndex +1].getHasRover() 
@@ -164,7 +165,7 @@ public class ROVER_01 {
 					 else {
 						// request to server to move
 						out.println("MOVE S");
-						//System.out.println("ROVER_01 request move S");
+						System.out.println("ROVER_01 request move S");
 					}
 					
 				} else {
@@ -175,6 +176,7 @@ public class ROVER_01 {
 					//added newly group 1, if SAND then dont step on it
 					if (scanMapTiles[centerIndex][centerIndex -1].getHasRover() 
 							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.SAND
+							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.ROCK
 							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.NONE) {
 						blocked = true;
 					} else if (scanMapTiles[centerIndex][centerIndex -1].getHasRover() 
@@ -199,19 +201,40 @@ public class ROVER_01 {
 				currentLoc = extractLOC(line);
 			}
 
-			//System.out.println("ROVER_01 currentLoc after recheck: " + currentLoc);
-			//System.out.println("ROVER_01 previousLoc: " + previousLoc);
+			System.out.println("ROVER_01 currentLoc after recheck: " + currentLoc);
+			System.out.println("ROVER_01 previousLoc: " + previousLoc);
 
 			// test for stuckness
 			stuck = currentLoc.equals(previousLoc);
+			
 
-			//System.out.println("ROVER_01 stuck test " + stuck);
+			//new code
+			if(stuck){
+				//try to turn the rover round
+				//get direction
+				if(goingSouth){
+					goingSouth = false;
+				}
+				else if(north){
+					//go south
+				}
+				else if(east){
+					//go west
+				}
+				else if(west){
+					//go east
+					
+				}
+				
+				//change direction
+			}
+			//end new code
+
+			System.out.println("ROVER_01 stuck test " + stuck);
 			System.out.println("ROVER_01 blocked test " + blocked);
 
 			// TODO - logic to calculate where to move next
 
-			
-			
 			Thread.sleep(sleepTime);
 			
 			System.out.println("ROVER_01 ------------ bottom process control --------------"); 
@@ -233,7 +256,7 @@ public class ROVER_01 {
 	private ArrayList<String> getEquipment() throws IOException {
 		//System.out.println("ROVER_01 method getEquipment()");
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		out.println("EQUIPMENT");
+		//out.println("EQUIPMENT");
 		
 		String jsonEqListIn = in.readLine(); //grabs the string that was returned first
 		if(jsonEqListIn == null){
