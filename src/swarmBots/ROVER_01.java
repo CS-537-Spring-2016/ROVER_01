@@ -52,7 +52,9 @@ public class ROVER_01 {
 
 		// Make connection and initialize streams
 		//TODO - need to close this socket
-		Socket socket = new Socket(SERVER_ADDRESS, PORT_ADDRESS); // set port here
+		Socket socket = null;
+		try {
+		socket = new Socket(SERVER_ADDRESS, PORT_ADDRESS); // set port here
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		out = new PrintWriter(socket.getOutputStream(), true);
 
@@ -75,6 +77,15 @@ public class ROVER_01 {
 		String line = "";
 		Coord rovergroupStartPosition = null;
 		Coord targetLocation = null;
+
+		/**
+		 *  Get initial values that won't change
+		 */
+		// **** get equipment listing ****			
+		ArrayList<String> equipment = new ArrayList<String>();
+		equipment = getEquipment();
+		System.out.println(rovername + " equipment list results " + equipment + "\n");
+		
 		
 		// **** Request START_LOC Location from SwarmServer ****
 					out.println("START_LOC");
@@ -145,11 +156,7 @@ public class ROVER_01 {
 			
 			
 			
-			// **** get equipment listing ****			
-			ArrayList<String> equipment = new ArrayList<String>();
-			equipment = getEquipment();
-			//System.out.println("ROVER_01 equipment list results drive " + equipment.get(0));
-			System.out.println("ROVER_01 equipment list results " + equipment + "\n");
+			
 			
 	
 
@@ -159,6 +166,17 @@ public class ROVER_01 {
 			scanMap.debugPrintMap();
 			
 			
+			// ***** get TIMER remaining *****
+			out.println("TIMER");
+			line = in.readLine();
+            if (line == null) {
+            	System.out.println(rovername + " check connection to server");
+            	line = "";
+            }
+			if (line.startsWith("TIMER")) {
+				String timeRemaining = line.substring(6);
+				System.out.println(rovername + " timeRemaining: " + timeRemaining);
+			}
 			
 
 			
@@ -248,15 +266,29 @@ public class ROVER_01 {
 			
 			System.out.println("ROVER_01 ------------ bottom process control --------------"); 
 		}
+		// This catch block closes the open socket connection to the server
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+			        if (socket != null) {
+			            try {
+			            	socket.close();
+			            } catch (IOException e) {
+			            	System.out.println("ROVER_01 problem closing socket");
+			            }
+			        }
+			    }
 
-	}
+			} // END of Rover main control loop
+	
 	
 	// ################ Support Methods ###########################
 	
 	private void clearReadLineBuffer() throws IOException{
 		while(in.ready()){
 			//System.out.println("ROVER_01 clearing readLine()");
-			String garbage = in.readLine();	
+			 in.readLine();	
 		}
 	}
 	
@@ -264,7 +296,7 @@ public class ROVER_01 {
 	// method to retrieve a list of the rover's equipment from the server
 	private ArrayList<String> getEquipment() throws IOException {
 		//System.out.println("ROVER_01 method getEquipment()");
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Gson gson = new GsonBuilder().setPrettyPrinting().enableComplexMapKeySerialization().create();
 		out.println("EQUIPMENT");
 		
 		String jsonEqListIn = in.readLine(); //grabs the string that was returned first
@@ -302,7 +334,7 @@ public class ROVER_01 {
 	// sends a SCAN request to the server and puts the result in the scanMap array
 	public void doScan() throws IOException {
 		//System.out.println("ROVER_01 method doScan()");
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Gson gson = new GsonBuilder().setPrettyPrinting().enableComplexMapKeySerialization().create();
 		out.println("SCAN");
 
 		String jsonScanMapIn = in.readLine(); //grabs the string that was returned first
@@ -340,7 +372,9 @@ public class ROVER_01 {
 	// this takes the LOC response string, parses out the x and x values and
 	// returns a Coord object
 	public static Coord extractLOC(String sStr) {
-		sStr = sStr.substring(4);
+		int indexOf;
+		indexOf = sStr.indexOf(" ");
+		sStr = sStr.substring(indexOf +1);
 		if (sStr.lastIndexOf(" ") != -1) {
 			String xStr = sStr.substring(0, sStr.lastIndexOf(" "));
 			//System.out.println("extracted xStr " + xStr);
