@@ -28,15 +28,7 @@ public class MapTile {
 	
 	public MapTile(String terrainLetter){
 		// use any String as an argument to create MapTile with no terrain
-		if(terrainLetter.equals("R")){
-			this.terrain = Terrain.ROCK;			
-		} else if(terrainLetter.equals("S")){
-			this.terrain = Terrain.SAND;
-		} else if(terrainLetter.equals("G")){
-			this.terrain = Terrain.GRAVEL;
-		} else if(terrainLetter.equals("F")){
-			this.terrain = Terrain.FLUID;
-		}
+		this.terrain = Terrain.getEnum(terrainLetter);
 		
 		this.science = Science.NONE;
 		this.elevation = 0;
