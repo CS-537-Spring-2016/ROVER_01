@@ -178,6 +178,7 @@ public class ROVER_01 {
 				System.out.println(rovername + " timeRemaining: " + timeRemaining);
 			}
 			
+			
 
 			
 			// ***** MOVING *****
@@ -209,8 +210,13 @@ public class ROVER_01 {
 					} else if (scanMapTiles[centerIndex][centerIndex +1].getHasRover() 
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.FLUID) {
 						blocked = true;
+<<<<<<< HEAD
 
 					} else {
+=======
+					}
+                  else {
+>>>>>>> branch_pathfinder
 
 						// request to server to move
 						out.println("MOVE S");
