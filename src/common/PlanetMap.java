@@ -52,7 +52,7 @@ public class PlanetMap {
 		this.planetMap[4][23] = new MapTile("F");
 		this.planetMap[5][23] = new MapTile("F");
 		
-<<<<<<< HEAD
+
 		
 		this.planetMap[3][15] = new MapTile("S");
 		this.planetMap[3][13] = new MapTile("S");
@@ -61,8 +61,7 @@ public class PlanetMap {
 		this.planetMap[4][16] = new MapTile("S");
 		this.planetMap[5][15] = new MapTile("S");
 		
-=======
->>>>>>> branch_pathfinder
+
 		this.planetMap[24][10] = new MapTile("S");
 		this.planetMap[24][11] = new MapTile("S");
 		this.planetMap[24][12] = new MapTile("S");
