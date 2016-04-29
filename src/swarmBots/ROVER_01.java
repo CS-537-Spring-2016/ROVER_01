@@ -153,16 +153,10 @@ public class ROVER_01 {
 			
 			// after getting location set previous equal current to be able to check for stuckness and blocked later
 			previousLoc = currentLoc;
-<<<<<<< HEAD
-			
-			
-			
-			
-			
-	
-=======
->>>>>>> ec83cfa453b700175ecb1d9b7e7b0b0a413c075b
 
+			
+			
+			
 			// ***** do a SCAN *****
 			//System.out.println("ROVER_01 sending SCAN request");
 			this.doScan();
@@ -180,10 +174,7 @@ public class ROVER_01 {
 				String timeRemaining = line.substring(6);
 				System.out.println(rovername + " timeRemaining: " + timeRemaining);
 			}
-<<<<<<< HEAD
-			
-=======
->>>>>>> ec83cfa453b700175ecb1d9b7e7b0b0a413c075b
+
 			
 
 			
@@ -223,14 +214,10 @@ public class ROVER_01 {
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.FLUID) {
 						blocked = true;
 
-<<<<<<< HEAD
-					}
-                  else {
 
-=======
 					} else {
 						//gathering science
->>>>>>> ec83cfa453b700175ecb1d9b7e7b0b0a413c075b
+
 
 						// request to server to move
 						out.println("MOVE S");
