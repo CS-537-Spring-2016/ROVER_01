@@ -88,30 +88,30 @@ public class ROVER_01 {
 		
 		
 		// **** Request START_LOC Location from SwarmServer ****
-					out.println("START_LOC");
-					line = in.readLine();
-		            if (line == null) {
-		            	System.out.println(rovername + " check connection to server");
-		            	line = "";
-		            }
-					if (line.startsWith("START_LOC")) {
-						rovergroupStartPosition = extractLOC(line);
-					}
-					System.out.println(rovername + " START_LOC " + rovergroupStartPosition);
-					
-					
-					// **** Request TARGET_LOC Location from SwarmServer ****
-					out.println("TARGET_LOC");
-					line = in.readLine();
-		            if (line == null) {
-		            	System.out.println(rovername + " check connection to server");
-		            	line = "";
-		            }
-					if (line.startsWith("TARGET_LOC")) {
-						targetLocation = extractLOC(line);
-					}
-					System.out.println(rovername + " TARGET_LOC " + targetLocation);
-					
+		out.println("START_LOC");
+		line = in.readLine();
+        if (line == null) {
+        	System.out.println(rovername + " check connection to server");
+        	line = "";
+        }
+		if (line.startsWith("START_LOC")) {
+			rovergroupStartPosition = extractLOC(line);
+		}
+		System.out.println(rovername + " START_LOC " + rovergroupStartPosition);
+		
+		
+		// **** Request TARGET_LOC Location from SwarmServer ****
+		out.println("TARGET_LOC");
+		line = in.readLine();
+        if (line == null) {
+        	System.out.println(rovername + " check connection to server");
+        	line = "";
+        }
+		if (line.startsWith("TARGET_LOC")) {
+			targetLocation = extractLOC(line);
+		}
+		System.out.println(rovername + " TARGET_LOC " + targetLocation);
+		
 					
 
 					
@@ -153,12 +153,15 @@ public class ROVER_01 {
 			
 			// after getting location set previous equal current to be able to check for stuckness and blocked later
 			previousLoc = currentLoc;
+<<<<<<< HEAD
 			
 			
 			
 			
 			
 	
+=======
+>>>>>>> ec83cfa453b700175ecb1d9b7e7b0b0a413c075b
 
 			// ***** do a SCAN *****
 			//System.out.println("ROVER_01 sending SCAN request");
@@ -177,7 +180,10 @@ public class ROVER_01 {
 				String timeRemaining = line.substring(6);
 				System.out.println(rovername + " timeRemaining: " + timeRemaining);
 			}
+<<<<<<< HEAD
 			
+=======
+>>>>>>> ec83cfa453b700175ecb1d9b7e7b0b0a413c075b
 			
 
 			
@@ -203,6 +209,12 @@ public class ROVER_01 {
 					// check scanMap to see if path is blocked to the south
 					// (scanMap may be old data by now)
 					//added newly group 1, if SAND then dont step on it
+					System.out.println("ROVER_01: scanMapTiles[centerIndex][centerIndex].getScience().getSciString() " + scanMapTiles[centerIndex][centerIndex].getScience().getSciString());
+					if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
+						System.out.println("ROVER_01 request GATHER");
+						out.println("GATHER");
+						
+					}
 					if (scanMapTiles[centerIndex][centerIndex +1].getHasRover() 
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.SAND
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.NONE) {
@@ -211,9 +223,14 @@ public class ROVER_01 {
 							|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.FLUID) {
 						blocked = true;
 
+<<<<<<< HEAD
 					}
                   else {
 
+=======
+					} else {
+						//gathering science
+>>>>>>> ec83cfa453b700175ecb1d9b7e7b0b0a413c075b
 
 						// request to server to move
 						out.println("MOVE S");
@@ -226,6 +243,12 @@ public class ROVER_01 {
 					//System.out.println("ROVER_01 scanMapTiles[2][1].getHasRover() " + scanMapTiles[2][1].getHasRover());
 					//System.out.println("ROVER_01 scanMapTiles[2][1].getTerrain() " + scanMapTiles[2][1].getTerrain().toString());
 					//added newly group 1, if SAND then dont step on it
+					System.out.println("ROVER_01: scanMapTiles[centerIndex][centerIndex].getScience().getSciString() " + scanMapTiles[centerIndex][centerIndex].getScience().getSciString());
+					if (!scanMapTiles[centerIndex][centerIndex+1].getScience().getSciString().equals("N")) {
+						System.out.println("ROVER_01 request GATHER");
+						out.println("GATHER");
+						
+					}
 					if (scanMapTiles[centerIndex][centerIndex -1].getHasRover() 
 							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.SAND
 							|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.NONE) {
