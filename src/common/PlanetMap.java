@@ -28,7 +28,7 @@ public class PlanetMap {
 				this.planetMap[i][j] = new MapTile();
 			}
 		}
-<<<<<<< HEAD
+
 		this.startPosCoord = new Coord(0, 0);
 		this.targetPosCoord = new Coord(0, 0);
 	}
@@ -44,7 +44,7 @@ public class PlanetMap {
 		}
 		this.startPosCoord = startPos;
 		this.targetPosCoord = targetPos;
-=======
+
 		// temporary use for creating planet terrain for testing
 		this.planetMap[0][17] = new MapTile("G"); 
 		this.planetMap[0][18] = new MapTile("G"); 
@@ -112,7 +112,7 @@ public class PlanetMap {
 		this.planetMap[12][10] = new MapTile("G");
 		this.planetMap[12][11] = new MapTile("G");
 		
->>>>>>> branch_pathfinder
+
 	}
 	
 	public PlanetMap(String filename){
