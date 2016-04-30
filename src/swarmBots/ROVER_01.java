@@ -223,7 +223,14 @@ public class ROVER_01 {
 								|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.SAND
 								|| scanMapTiles[centerIndex][centerIndex +1].getTerrain() == Terrain.NONE) {
 							blocked = true;
-						} else {
+						}
+						if (scanMapTiles[centerIndex+1][centerIndex -1].getHasRover() 
+								|| scanMapTiles[centerIndex+1][centerIndex -1].getTerrain() == Terrain.SAND
+								|| scanMapTiles[centerIndex+1][centerIndex -1].getTerrain() == Terrain.NONE){
+							out.println("MOVE N");
+							blocked = false;
+						}
+						else {
 							// request to server to move
 							out.println("MOVE S");
 							//System.out.println("ROVER_01 request move S");
