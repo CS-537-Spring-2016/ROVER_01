@@ -213,9 +213,9 @@ public class ROVER_01 {
 					if (goingSouth) { 
 						// check scanMap to see if path is blocked to the south
 						// (scanMap may be old data by now)
-						System.out.println("ROVER_98: scanMapTiles[centerIndex][centerIndex].getScience().getSciString() " + scanMapTiles[centerIndex][centerIndex].getScience().getSciString());
+						System.out.println("ROVER_01: scanMapTiles[centerIndex][centerIndex].getScience().getSciString() " + scanMapTiles[centerIndex][centerIndex].getScience().getSciString());
 						if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
-							System.out.println("ROVER_98 request GATHER");
+							System.out.println("ROVER_01 request GATHER");
 							out.println("GATHER");
 							
 						}
@@ -234,7 +234,11 @@ public class ROVER_01 {
 						// (scanMap may be old data by now)
 						//System.out.println("ROVER_01 scanMapTiles[2][1].getHasRover() " + scanMapTiles[2][1].getHasRover());
 						//System.out.println("ROVER_01 scanMapTiles[2][1].getTerrain() " + scanMapTiles[2][1].getTerrain().toString());
-						
+						System.out.println("ROVER_01: scanMapTiles[centerIndex][centerIndex].getScience().getSciString() " + scanMapTiles[centerIndex][centerIndex].getScience().getSciString());
+						if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
+							System.out.println("ROVER_01 request GATHER");
+							out.println("GATHER");
+						}
 						if (scanMapTiles[centerIndex][centerIndex -1].getHasRover() 
 								|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.SAND
 								|| scanMapTiles[centerIndex][centerIndex -1].getTerrain() == Terrain.NONE) {
