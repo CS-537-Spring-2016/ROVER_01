@@ -290,6 +290,131 @@ public class ROVER_01 {
 	
 	// ####################### Support Methods #############################
 	
+	
+	private void AddSpectralLocations(String currentCoord,
+			ArrayList<String> spectralFetch) {
+		// TODO Auto-generated method stub
+		
+		//declaring variables for current x & y , crystal x & y
+		int x_Current=0, y_Current=0, x_Spectral=0, y_Spectral=0;
+		
+		boolean duplicate=false;
+		
+		String spectralLocation=null;
+		
+		//extracting the current coordinates and putting into integer variables
+		String[] currentCoordinates = currentCoord.split(" ");
+		x_Current = Integer.parseInt(currentCoordinates[0]);
+		y_Current = Integer.parseInt(currentCoordinates[1]);
+		
+		// iterating the crystalsfetch array list for all the crystal locations
+		for(String s:spectralFetch){
+			//extracting the crystal coordinates and putting into integer variables
+			String[] spectralCoordinates = s.split(" ");
+			x_Spectral = Integer.parseInt(spectralCoordinates[0]);
+			y_Spectral = Integer.parseInt(spectralCoordinates[1]);
+			
+			// checking the x value of spectral coordinate in the scan map
+			// least will be 0 and max will 10 while 5 will be median
+			switch(x_Spectral){
+			case 0:
+				x_Spectral=x_Current-5;
+				break;
+			case 1:
+				x_Spectral=x_Current-4;
+				break;
+			case 2:
+				x_Spectral=x_Current-3;
+				break;
+			case 3:
+				x_Spectral=x_Current-2;
+				break;
+			case 4:
+				x_Spectral=x_Current-1;
+				break;
+			case 5:
+				x_Spectral=x_Current;
+				break;
+			case 6:
+				x_Spectral=x_Current+1;
+				break;
+			case 7:
+				x_Spectral=x_Current+2;
+				break;
+			case 8:
+				x_Spectral=x_Current+3;
+				break;
+			case 9:
+				x_Spectral=x_Current+4;
+				break;
+			case 10:
+				x_Spectral=x_Current+5;
+				break;
+			}
+			
+			// checking the y value of spectral coordinate in the scan map
+			// least will be 0 and max will 10 while 5 will be median
+			switch(y_Spectral){
+			case 0:
+				y_Spectral=y_Current-5;
+				break;
+			case 1:
+				y_Spectral=y_Current-4;
+				break;
+			case 2:
+				y_Spectral=y_Current-3;
+				break;
+			case 3:
+				y_Spectral=y_Current-2;
+				break;
+			case 4:
+				y_Spectral=y_Current-1;
+				break;
+			case 5:
+				y_Spectral=y_Current;
+				break;
+			case 6:
+				y_Spectral=y_Current+1;
+				break;
+			case 7:
+				y_Spectral=y_Current+2;
+				break;
+			case 8:
+				y_Spectral=y_Current+3;
+				break;
+			case 9:
+				y_Spectral=y_Current+4;
+				break;
+			case 10:
+				y_Spectral=y_Current+5;
+				break;
+			}
+			
+			// checking whether coordinates are not negative
+			if(x_Spectral>=0 && y_Spectral>=0){
+				//creating a string form of coordinates to store in arraylist
+				spectralLocation=x_Spectral+","+y_Spectral;
+				// iterating through existing coordinates arraylist for duplicates
+			/*	for(String loc:this.spectralLocations){
+					if(loc.equals(spectralLocation)){
+						duplicate=true;
+						break;
+					}
+						
+				}*/
+				// adding to arraylist if no duplicates found above
+				if(!duplicate)
+				//	this.spectralLocations.add(spectralLocation);
+					duplicate=false;
+			}			
+			
+		}
+		
+	}
+
+
+	
+	
 	private void clearReadLineBuffer() throws IOException{
 		while(in.ready()){
 			//System.out.println("ROVER_01 clearing readLine()");
