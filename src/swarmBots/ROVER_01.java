@@ -312,45 +312,58 @@ public class ROVER_01 {
 	}
 	
 
-	// method to retrieve a list of the rover's EQUIPMENT from the server
+// method to retrieve a list of the rover's EQUIPMENT from the server
+	@SuppressWarnings("unused")
 	private ArrayList<String> getEquipment() throws IOException {
-		//System.out.println("ROVER_01 method getEquipment()");
-		Gson gson = new GsonBuilder()
-    			.setPrettyPrinting()
-    			.enableComplexMapKeySerialization()
-    			.create();
-		out.println("EQUIPMENT");
 		
-		String jsonEqListIn = in.readLine(); //grabs the string that was returned first
-		if(jsonEqListIn == null){
-			jsonEqListIn = "";
-		}
-		StringBuilder jsonEqList = new StringBuilder();
-		//System.out.println("ROVER_01 incomming EQUIPMENT result - first readline: " + jsonEqListIn);
+		ArrayList<String> returnList = null;		
 		
-		if(jsonEqListIn.startsWith("EQUIPMENT")){
-			while (!(jsonEqListIn = in.readLine()).equals("EQUIPMENT_END")) {
-				if(jsonEqListIn == null){
-					break;
-				}
-				//System.out.println("ROVER_01 incomming EQUIPMENT result: " + jsonEqListIn);
-				jsonEqList.append(jsonEqListIn);
-				jsonEqList.append("\n");
-				//System.out.println("ROVER_01 doScan() bottom of while");
+		try{
+			//System.out.println("ROVER_01 method getEquipment()");
+			Gson gson = new GsonBuilder()
+	    			.setPrettyPrinting()
+	    			.enableComplexMapKeySerialization()
+	    			.create();
+			out.println("EQUIPMENT");
+			
+			String jsonEqListIn = in.readLine(); //grabs the string that was returned first
+			if(jsonEqListIn == null){
+				jsonEqListIn = "";
 			}
-		} else {
-			// in case the server call gives unexpected results
-			clearReadLineBuffer();
-			return null; // server response did not start with "EQUIPMENT"
+			StringBuilder jsonEqList = new StringBuilder();
+			//System.out.println("ROVER_01 incomming EQUIPMENT result - first readline: " + jsonEqListIn);
+			
+			if(jsonEqListIn.startsWith("EQUIPMENT")){
+				while (!(jsonEqListIn = in.readLine()).equals("EQUIPMENT_END")) {
+					if(jsonEqListIn == null){
+						break;
+					}
+					//System.out.println("ROVER_01 incomming EQUIPMENT result: " + jsonEqListIn);
+					jsonEqList.append(jsonEqListIn);
+					jsonEqList.append("\n");
+					//System.out.println("ROVER_01 doScan() bottom of while");
+				}
+			} else {
+				// in case the server call gives unexpected results
+				clearReadLineBuffer();
+				return null; // server response did not start with "EQUIPMENT"
+			}
+			
+			String jsonEqListString = jsonEqList.toString();		
+			returnList = gson.fromJson(jsonEqListString, new TypeToken<ArrayList<String>>(){}.getType());		
+			//System.out.println("ROVER_01 returnList " + returnList);
+			
 		}
-		
-		String jsonEqListString = jsonEqList.toString();		
-		ArrayList<String> returnList;		
-		returnList = gson.fromJson(jsonEqListString, new TypeToken<ArrayList<String>>(){}.getType());		
-		//System.out.println("ROVER_01 returnList " + returnList);
-		
+		catch(Exception ex){
+			System.out.println("Error Message :- ");
+			ex.printStackTrace();
+		}
+
 		return returnList;
+
 	}
+	
+
 	
 
 	// sends a SCAN request to the server and puts the result in the scanMap array
