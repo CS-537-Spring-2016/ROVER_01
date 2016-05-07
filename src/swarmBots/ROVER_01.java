@@ -311,6 +311,27 @@ public class ROVER_01 {
 		}
 	}
 	
+	public void avoid_side_obstacles(){
+			// Make connection to SwarmServer and initialize streams
+		Socket socket = null;
+		try {
+			socket = new Socket(SERVER_ADDRESS, PORT_ADDRESS);
+
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			out = new PrintWriter(socket.getOutputStream(), true);
+			String line = in.readLine();
+			if (line.startsWith("LOC")) {
+				currentLoc = extractLocationFromString(line);
+				//check for obstacles on right, left, bottom and top
+			}
+
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+		}
+	
+	
+	}
 
 // method to retrieve a list of the rover's EQUIPMENT from the server
 	@SuppressWarnings("unused")
