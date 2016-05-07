@@ -50,7 +50,60 @@ public class ROVER_01 {
 		SERVER_ADDRESS = serverAddress;
 		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
 	}
+	
+	
+	public ROVER_01() {
+		// constructor
+		System.out.println("ROVER_01 rover object constructed");
+		rovername = "ROVER_01";
+		SERVER_ADDRESS = "localhost";
+		// this should be a safe but slow timer value
+		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
+	}
+	
+	public ROVER_01(String serverAddress) {
+		// constructor
+		System.out.println("ROVER_01 rover object constructed");
+		rovername = "ROVER_01";
+		SERVER_ADDRESS = serverAddress;
+		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
+	}
 
+	//get scanned map details of 7*7, still underdevelopment
+	public void GetScannedLocationDetails(Coord currentLoc)
+	{
+		ArrayList<String> locationInfo = new ArrayList<String>();
+		String terrainType = "n";
+		String scienceType ="n";
+		String xcoordinate = "n";
+		String ycoordinate = "n";
+		MapTile[][] scanMapTiles = scanMap.getScanMap();
+		int centerIndex = (scanMap.getEdgeSize() - 1)/2;
+		int startX ;
+		
+		// tile S = y + 1; N = y - 1; E = x + 1; W = x - 1
+		
+		//getting the length of a singles scan - whcih would be 7 for a noraml rover
+		
+		int sizeOfSingleScan = scanMapTiles.length;
+		//scanning for all 
+		for(int i = 0 ; i < sizeOfSingleScan; i++)
+		{
+			for(int j = 0; j < sizeOfSingleScan ; j++)
+			{
+				if (scanMapTiles[i][j].getHasRover() 
+						|| scanMapTiles[i][j].getTerrain() == Terrain.SAND
+						|| scanMapTiles[i][j].getTerrain() == Terrain.NONE) 
+				{
+					//te = sand;
+					//x = 
+				}
+			}
+		}
+		
+		
+	}
+// development of scanning 7*7 matrix ends here
 	/**
 	 * Connects to the server then enters the processing loop.
 	 */
