@@ -321,7 +321,7 @@ public class ROVER_01 {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			String line = in.readLine();
 			if (line.startsWith("LOC")) {
-				currentLoc = extractLocationFromString(line);
+				Coord currentLoc = extractLocationFromString(line);
 				//check for obstacles on right, left, bottom and top
 			}
 
