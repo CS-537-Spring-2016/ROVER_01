@@ -1,21 +1,27 @@
 package swarmBots;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.reflect.Type;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import common.Coord;
+import common.Group;
 import common.MapTile;
 import common.ScanMap;
+import enums.Science;
 import enums.Terrain;
 
 /**
@@ -33,7 +39,45 @@ public class ROVER_01 {
 	int sleepTime;
 	String SERVER_ADDRESS = "localhost";
 	static final int PORT_ADDRESS = 9537;
+	
+	// all the sockets of blue team - output
+	List<Socket> outputSockets = new ArrayList<Socket>();
 
+	// objects contains each rover IP, port, and name
+	List<Group> blue = new ArrayList<Group>();
+
+	// every science detected will be added in to this set
+	Set<Coord> science_discovered = new HashSet<Coord>();
+
+	// this set contains all the science the ROVERED has shared
+	// thus whatever thats in science_collection that is not in display_science
+	// are "new" and "unshared"
+	Set<Coord> displayed_science = new HashSet<Coord>();
+	
+	// ROVER current location
+    Coord roverLoc;
+    
+    // Your ROVER is going to listen for connection with this
+    ServerSocket listenSocket;
+    
+//	public ROVER_01() {
+//		// constructor
+//		System.out.println("ROVER_01 rover object constructed");
+//		rovername = "ROVER_01";
+//		SERVER_ADDRESS = "localhost";
+//		// this should be a safe but slow timer value
+//		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
+//	}
+//	
+//	public ROVER_01(String serverAddress) {
+//		// constructor
+//		System.out.println("ROVER_01 rover object constructed");
+//		rovername = "ROVER_01";
+//		SERVER_ADDRESS = serverAddress;
+//		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
+//	}
+	
+	
 	public ROVER_01() {
 		// constructor
 		System.out.println("ROVER_01 rover object constructed");
@@ -51,58 +95,128 @@ public class ROVER_01 {
 		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
 	}
 	
-	
-	public ROVER_01() {
-		// constructor
-		System.out.println("ROVER_01 rover object constructed");
-		rovername = "ROVER_01";
-		SERVER_ADDRESS = "localhost";
-		// this should be a safe but slow timer value
-		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
-	}
-	
-	public ROVER_01(String serverAddress) {
-		// constructor
-		System.out.println("ROVER_01 rover object constructed");
-		rovername = "ROVER_01";
-		SERVER_ADDRESS = serverAddress;
-		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
-	}
+	/**
+	 * Try to connect each socket on a separate thread. Will try until it works.
+	 * When socket is created, save it to a LIST
+	 * 
+	 * @author Shay
+	 *
+	 */
+	class RoverComm implements Runnable {
 
-	//get scanned map details of 7*7, still underdevelopment
-	public void GetScannedLocationDetails(Coord currentLoc)
-	{
-		ArrayList<String> locationInfo = new ArrayList<String>();
-		String terrainType = "n";
-		String scienceType ="n";
-		String xcoordinate = "n";
-		String ycoordinate = "n";
-		MapTile[][] scanMapTiles = scanMap.getScanMap();
-		int centerIndex = (scanMap.getEdgeSize() - 1)/2;
-		int startX ;
-		
-		// tile S = y + 1; N = y - 1; E = x + 1; W = x - 1
-		
-		//getting the length of a singles scan - whcih would be 7 for a noraml rover
-		
-		int sizeOfSingleScan = scanMapTiles.length;
-		//scanning for all 
-		for(int i = 0 ; i < sizeOfSingleScan; i++)
-		{
-			for(int j = 0; j < sizeOfSingleScan ; j++)
-			{
-				if (scanMapTiles[i][j].getHasRover() 
-						|| scanMapTiles[i][j].getTerrain() == Terrain.SAND
-						|| scanMapTiles[i][j].getTerrain() == Terrain.NONE) 
-				{
-					//te = sand;
-					//x = 
+		String ip;
+		int port;
+		Socket socket;
+
+		public RoverComm(String ip, int port) {
+			this.ip = ip;
+			this.port = port;
+		}
+
+		@Override
+		public void run() {
+			do {
+				try {
+					socket = new Socket(ip, port);
+				} catch (UnknownHostException e) {
+
+				} catch (IOException e) {
+
+				}
+			} while (socket == null);
+			
+			outputSockets.add(socket);
+			System.out.println(socket.getPort() + " " + socket.getInetAddress());
+		}
+
+	}
+	
+	/**
+	 * add all the group's rover into a LIST
+	 */
+	public void initConnection() {
+        // dummy value # 1
+        blue.add(new Group("Dummy Group #1", "localhost", 53799));
+
+        // blue rooster
+        blue.add(new Group("GROUP_02", "localhost", 53702));
+        blue.add(new Group("GROUP_03", "localhost", 53703));
+        blue.add(new Group("GROUP_04", "localhost", 53704));
+        blue.add(new Group("GROUP_05", "localhost", 53705));
+        blue.add(new Group("GROUP_06", "localhost", 53706));
+        blue.add(new Group("GROUP_07", "localhost", 53707));
+        blue.add(new Group("GROUP_08", "localhost", 53708));
+        blue.add(new Group("GROUP_09", "localhost", 53709));
+    }
+	
+	/**
+	 * Create and start a thread for each ROVER connected to you.
+	 * 
+	 * @throws IOException
+	 * @author Shay
+	 */
+	private void startServer() throws IOException {
+
+		// create a thread that waits for client to connect to 
+		new Thread(() -> {
+			while (true) {
+				try {
+					// wait for a connection
+					Socket connectionSocket = listenSocket.accept();
+
+					// once there is a connection, serve them on thread
+					new Thread(new RoverHandler(connectionSocket)).start();
+					
+
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
-		}
-		
-		
+		}).start();
 	}
+	
+	/**
+	 * When any ROVER discovered science, it will write a message to your all ROVERS.
+	 * That message will be "sent" here. This block of code will read whatever
+	 * written to you. Your job is to use the data to tell your rover to go pick
+	 * up that science.
+	 * 
+	 * @author Shay
+	 *
+	 */
+	class RoverHandler implements Runnable {
+		Socket roverSocket;
+
+		public RoverHandler(Socket socket) {
+			this.roverSocket = socket;
+		}
+
+		@Override
+		public void run() {
+
+			try {
+				BufferedReader input = new BufferedReader(new InputStreamReader(roverSocket.getInputStream()));
+
+				while (true) {
+
+					String line = input.readLine();
+					// protocol: ROCK CRYSTAL 25 30
+					System.out.println("NEW MESSAGE: " + line);
+		
+					/*
+					 * IMPLEMENT YOUR CODE HERE
+					 * WHAT DO YOU WANT TO DO WITH THE DATA?
+					 */
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+		
+		
 // development of scanning 7*7 matrix ends here
 	/**
 	 * Connects to the server then enters the processing loop.
@@ -116,6 +230,29 @@ public class ROVER_01 {
 
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
+			
+			/*
+			 * This is the server that you are listening on. 
+			 * This means when we want to contact you, we use that port number.
+			 */
+			listenSocket = new ServerSocket(53701);
+			
+			/*
+			 * When you start the server, it will set there and waits for people to connect
+			 * Once they are connected, a thread is created for each ROVER
+			 * All  that thread will do is sit there and read all incoming message to you.
+			 * It is your job to parse the information and use it to gather stuff.
+			 */
+			startServer();
+			
+			
+			/*
+			 * connect to all the ROVERS on a separate thread
+			 */
+	        initConnection();
+	        for (Group group : blue) {
+	            new Thread(new RoverComm(group.ip, group.port)).start();
+	        }
 			
 	
 			// Process all messages from server, wait until server requests Rover ID
@@ -209,6 +346,9 @@ public class ROVER_01 {
 					// loc = line.substring(4);
 					currentLoc = extractLocationFromString(line);
 					
+					// class variable
+					roverLoc = extractLocationFromString(line);
+					
 				}
 				System.out.println(rovername + " currentLoc at start: " + currentLoc);
 				
@@ -227,7 +367,14 @@ public class ROVER_01 {
 				// prints the scanMap to the Console output for debug purposes
 				scanMap.debugPrintMap();
 				
-		
+				
+				// ****************** Check scan map for science and shared them ***********************
+				
+				detectCrystal(scanMap.getScanMap());
+				System.out.println("SCIENCE DISCOVERED: " + science_discovered);
+				shareScience();
+				
+				// *********************************************************************
 				
 				
 				// ***** get TIMER remaining *****
@@ -356,6 +503,49 @@ public class ROVER_01 {
 	} // END of Rover main control loop
 	
 	// ####################### Support Methods #############################
+	
+	
+	/**
+	 * iterate through a scan map to find a tile with radiation. get the
+	 * adjusted (absolute) coordinate of the tile and added into a hash set
+	 * 
+	 * @param scanMapTiles
+	 * @author Shay
+	 */
+	private void detectCrystal(MapTile[][] scanMapTiles) {
+		for (int x = 0; x < scanMapTiles.length; x++) {
+			for (int y = 0; y < scanMapTiles[x].length; y++) {
+				MapTile mapTile = scanMapTiles[x][y];
+				if (mapTile.getScience() == Science.CRYSTAL) {
+					int tileX = roverLoc.xpos + (x - 3);
+					int tileY = roverLoc.ypos + (y - 3);
+					Coord coord = new Coord(mapTile.getTerrain(), mapTile.getScience(), tileX, tileY);
+					science_discovered.add(coord);
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * write to each rover the coords of a tile that contains radiation. will
+	 * only write to them if the coords are new.
+	 * 
+	 * @author Shay
+	 */
+	private void shareScience() {
+		for (Coord c : science_discovered) {
+			if (!displayed_science.contains(c)) {
+				for (Socket s : outputSockets)
+					try {
+						new DataOutputStream(s.getOutputStream()).writeBytes(c.toString() + "\r\n");
+					} catch (Exception e) {
+
+					}
+				displayed_science.add(c);
+			}
+		}
+	}
 	
 	private void clearReadLineBuffer() throws IOException{
 		while(in.ready()){
