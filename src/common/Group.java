@@ -1,5 +1,10 @@
 package common;
 
+/**
+ * store essential information for each group
+ * @author Shay
+ *
+ */
 public class Group {
 
 	public String ip;

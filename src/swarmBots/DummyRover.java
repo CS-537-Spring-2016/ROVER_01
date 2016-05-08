@@ -6,6 +6,12 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * used to for testing.
+ * run this to see if your rover is sending out information tao others properly
+ * @author Shay
+ *
+ */
 public class DummyRover {
 
     public static void main(String[] args) {
