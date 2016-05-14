@@ -462,6 +462,7 @@ public class ROVER_01 {
 				// ***** get TIMER remaining *****
 				out.println("TIMER");
 				line = in.readLine();
+				System.out.println(line);
 	            if (line == null) {
 	            	System.out.println(rovername + " check connection to server");
 	            	line = "";
@@ -547,6 +548,7 @@ public class ROVER_01 {
 					int tileY = roverLoc.ypos + (y - 3);
 					Coord coord = new Coord(mapTile.getTerrain(), mapTile.getScience(), tileX, tileY);
 					science_discovered.add(coord);
+					System.out.println("Science discovered at :- "+coord.toString());
 				}
 			}
 		}
