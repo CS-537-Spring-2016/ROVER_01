@@ -293,6 +293,16 @@ public class ROVER_01 {
 				System.out.println("ROVER_01 request GATHER");
 				out.println("GATHER");
 			}
+			if (scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("M")
+					|| scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("M")
+					|| scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("C")
+					|| scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("Y")
+					|| scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("A")
+					|| scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("O")) {
+				System.out.println("ROVER_04 request GATHER");
+				out.println("GATHER");
+				
+		}
 			counter ++;
 			move(direction);
 		}
@@ -307,6 +317,16 @@ public class ROVER_01 {
 				System.out.println("ROVER_01 request GATHER");
 				out.println("GATHER");
 			}
+			if (scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("M")
+					|| scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("M")
+					|| scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("C")
+					|| scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("Y")
+					|| scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("A")
+					|| scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("O")) {
+				System.out.println("ROVER_01 request GATHER");
+				out.println("GATHER");
+				
+		}
 			counter++;
 			move(direction);
 		}
