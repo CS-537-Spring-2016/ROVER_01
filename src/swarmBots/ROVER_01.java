@@ -290,6 +290,8 @@ public class ROVER_01 {
 			return true;
 		
 	}
+//this function will scan the map tiles if there is a sand or not?	
+
 //movement of rover
 	public void roverMovement(MapTile[][] scanMapTiles, Coord currentLoc) throws IOException, InterruptedException
 	{
