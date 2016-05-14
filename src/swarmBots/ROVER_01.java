@@ -293,7 +293,7 @@ public class ROVER_01 {
 				System.out.println("ROVER_01 request GATHER");
 				out.println("GATHER");
 			}
-			//counter ++;
+			counter ++;
 			move(direction);
 		}
 		else
@@ -301,11 +301,13 @@ public class ROVER_01 {
 			while (!checkValidityOfMove(scanMapTiles, direction)) {
 
 				direction = changeRoverDirection(direction);
+				counter=0;
 			}
 			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
 				System.out.println("ROVER_01 request GATHER");
 				out.println("GATHER");
 			}
+			counter++;
 			move(direction);
 		}
 		/*if(counter == 5)
