@@ -240,7 +240,8 @@ public class ROVER_01 {
 	}
 	
 //change direction of rover is next move is a sand, wall or a rover
-	
+
+//this function will move the rover randomly in the east,west,north or south direction.	
 	public String changeRoverDirection(String direction)
 	{
 		ArrayList<String> directions = new ArrayList<String>();
@@ -256,7 +257,7 @@ public class ROVER_01 {
 		default: return null;
 		}
 	}
-	
+//validation of the rover is the next move.
 	
 //validty of rover next move
 	public Boolean checkValidityOfMove(MapTile[][] scanMapTiles, String direction)
