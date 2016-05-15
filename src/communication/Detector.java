@@ -19,16 +19,16 @@ public interface Detector {
 
     /** @param map
      *            A scannedMap from your ROVER (i.e. scanMap.getScannedMap())
-     * @param rover_coord
+     * @param roverCoord
      *            Rover current coordinates. Used to determine the absolute,(not
      *            based on your ROVER 7x7 or 11x11 radius but based on the
      *            ENTIRE map), coordinates of the science.
-     * @param sight_range
+     * @param sightRange
      *            Either 3 if your ROVER radius is 7x7 or 5 if your ROVER radius
      *            is 11x11. This number indicates how many tiles your ROVER can
      *            see to each Direction. Since your ROVER is in the middle of
      *            the Scanned Map, it can only see 3 or 5 tiles NORTH, EAST,
      *            WEST, OR SOUTH
      * @return A list of all the science detected in the scanned map. */
-    List<Coord> detectScience(MapTile[][] map, Coord rover_coord, int sight_range);
+    List<Coord> detectScience(MapTile[][] map, Coord roverCoord, int sightRange);
 }

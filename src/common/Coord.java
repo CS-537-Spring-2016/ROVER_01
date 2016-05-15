@@ -11,9 +11,9 @@ public class Coord {
 	
 	public final int xpos;
 	public final int ypos;
-	Terrain terrain;
-    boolean hasRover;
-    Science science;
+	public Terrain terrain;
+    public boolean hasRover;
+    public Science science;
 	
     @Override
     public String toString() {

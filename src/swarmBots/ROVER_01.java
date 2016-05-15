@@ -1,8 +1,12 @@
 package swarmBots;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Random;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,6 +17,9 @@ import common.MapTile;
 import common.ScanMap;
 import communication.Group;
 import communication.RoverCommunication;
+import enums.RoverDriveType;
+import enums.RoverToolType;
+import enums.Science;
 import enums.Terrain;
 
 /**
@@ -69,8 +76,6 @@ public class ROVER_01 {
 		SERVER_ADDRESS = "localhost";
 		// this should be a safe but slow timer value
 		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
-		
-		rocom = new RoverCommunication(rovername, Group.BLUE_GATHERERS(SERVER_ADDRESS));
 	}
 	
 	public ROVER_01(String serverAddress) {
@@ -79,8 +84,6 @@ public class ROVER_01 {
 		rovername = "ROVER_01";
 		SERVER_ADDRESS = serverAddress;
 		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
-		
-		rocom = new RoverCommunication(rovername, Group.BLUE_GATHERERS(SERVER_ADDRESS));
 	}
 
 // development of scanning 7*7 matrix ends here
@@ -189,9 +192,24 @@ public class ROVER_01 {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
 			
-            /* attempts to connects to every gather ROVERS */
+            // ******************* SET UP COMMUNICATION MODULE by Shay *********************
+			/* Your Group Info*/
+            Group group = new Group(rovername, SERVER_ADDRESS, 53701, RoverDriveType.WALKER,
+                    RoverToolType.DRILL, RoverToolType.SPECTRAL_SENSOR);
+
+            /* Setup communication, only communicates with gatherers */
+            rocom = new RoverCommunication(group,
+                    Group.getGatherers(Group.blueCorp(SERVER_ADDRESS)));
+
+            /* Can't go on sand, thus ignore any SCIENCE COORDS that is on SAND */
+            rocom.getReceiver().ignoreTerrains(Terrain.SAND);
+
+            /* Connect to the other ROVERS */
             rocom.run();
-            /* ********************************************/
+
+            /* Start your server, receive incoming message from other ROVERS */
+            rocom.startServer();
+            // ******************************************************************
             
 			// Process all messages from server, wait until server requests Rover ID
 			// name - Return Rover Name to complete connection

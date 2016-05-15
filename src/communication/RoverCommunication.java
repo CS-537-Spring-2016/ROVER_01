@@ -2,6 +2,8 @@ package communication;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,39 +19,56 @@ import common.MapTile;
  * @author Shay */
 public class RoverCommunication implements Runnable, Detector, Sender {
 
-    private Map<Group, DataOutputStream> group_output_map;
-    private List<Coord> discovered_science;
-    private List<Group> groups_list;
-    private String rover_name;
+    private Map<Group, DataOutputStream> groupOutputMap;
+    private List<Coord> discoveredSciences;
+    private List<Group> groupList;
+    private Group group;
+    private Receiver receiver;
 
-    public RoverCommunication(String rover_name, List<Group> groups) {
-        group_output_map = new HashMap<Group, DataOutputStream>();
-        discovered_science = new ArrayList<Coord>();
-        this.rover_name = rover_name;
+    public RoverCommunication(Group group, List<Group> groups) throws IOException {
+        groupOutputMap = new HashMap<Group, DataOutputStream>();
+        discoveredSciences = new ArrayList<Coord>();
+        this.group = group;
 
-        groups_list = removeSelfFromGroups(groups);
+        groupList = removeSelfFromGroups(groups);
+        receiver = new RoverReceiver();
+    }
+
+    public void startServer() throws IOException {
+        receiver.startServer(new ServerSocket(group.getPort()));
+    }
+
+    public Receiver getReceiver() {
+        return receiver;
+    }
+
+    public List<Coord> getShareScience() {
+        return receiver.getSharedCoords();
     }
 
     /** Scan the map for science. Update rover science list. Share the science
      * to all the ROVERS. Display result on console. Also display the list of
-     * connected ROVER
+     * connected ROVER and all the SCIENCE shared to you that are not filetered
      * 
      * @param map
      *            Result of scanMap.getScanMap(). Use to check for science
      * @param currentLoc
      *            ROVER current location. Use to calculate the science absolute
      *            location
-     * @param sight_range
+     * @param sightRange
      *            Either 3, if your radius is 7x7, or 5, if your radius is 11x11
      * @throws IOException */
-    public void detectAndShare(MapTile[][] map, Coord currentLoc, int sight_range) throws IOException {
-        List<Coord> detected_sciences = detectScience(map, currentLoc, sight_range);
-        List<Coord> new_sciences = updateDiscoveries(detected_sciences);
-        for (Coord c : new_sciences) {
-            shareScience(convertToList(group_output_map.values()), c);
+    public void detectAndShare(MapTile[][] map, Coord currentLoc, int sightRange)
+            throws IOException {
+        List<Coord> detectedSciences = detectScience(map, currentLoc, sightRange);
+        List<Coord> newSciences = updateDiscoveries(detectedSciences);
+        for (Coord c : newSciences) {
+            shareScience(convertToList(groupOutputMap.values()), c);
         }
         displayAllDiscoveries();
-        displayConnections();
+        displayRoversImConnectedTo();
+        displayNumRoversConnectedToMe();
+        displayShareScience();
     }
 
     private List<DataOutputStream> convertToList(Collection<DataOutputStream> values) {
@@ -60,8 +79,13 @@ public class RoverCommunication implements Runnable, Detector, Sender {
         return output_streams;
     }
 
+    public void displayNumRoversConnectedToMe() {
+        System.out.println(
+                group.getName() + " ROVERS-CONNECTED-TO-ME: " + receiver.getRoversConnectedToMe());
+    }
+
     @Override
-    public List<Coord> detectScience(MapTile[][] map, Coord rover_coord, int sight_range) {
+    public List<Coord> detectScience(MapTile[][] map, Coord rover_coord, int sightRange) {
         List<Coord> science_coords = new ArrayList<Coord>();
 
         /* iterate through every MapTile Object in the 2D Array. If the MapTile
@@ -72,9 +96,10 @@ public class RoverCommunication implements Runnable, Detector, Sender {
                 MapTile mapTile = map[x][y];
 
                 if (Detector.DETECTABLE_SCIENCES.contains(mapTile.getScience())) {
-                    int tileX = rover_coord.xpos + (x - sight_range);
-                    int tileY = rover_coord.ypos + (y - sight_range);
-                    Coord coord = new Coord(mapTile.getTerrain(), mapTile.getScience(), tileX, tileY);
+                    int tileX = rover_coord.xpos + (x - sightRange);
+                    int tileY = rover_coord.ypos + (y - sightRange);
+                    Coord coord = new Coord(mapTile.getTerrain(), mapTile.getScience(), tileX,
+                            tileY);
                     science_coords.add(coord);
                 }
             }
@@ -82,46 +107,55 @@ public class RoverCommunication implements Runnable, Detector, Sender {
         return science_coords;
     }
 
-    private void displayAllDiscoveries() {
-        System.out.println(rover_name + " SCIENCE-DISCOVERED-BY-ME: " + toProtocolString(discovered_science));
-        System.out.println(rover_name + " TOTAL-NUMBER-OF-SCIENCE-DISCOVERED-BY-ME: " + discovered_science.size());
+    public void displayAllDiscoveries() {
+        System.out.println(group.getName() + " SCIENCE-DISCOVERED-BY-ME: "
+                + toProtocolString(discoveredSciences));
+        System.out.println(group.getName() + " TOTAL-NUMBER-OF-SCIENCE-DISCOVERED-BY-ME: "
+                + discoveredSciences.size());
     }
 
-    private void displayConnections() {
-        System.out.println(rover_name + " CONNECTED TO: " + group_output_map.size() + " ROVERS");
-        System.out.println(rover_name + " CONNECTIONS: " + group_output_map.keySet());
+    public void displayRoversImConnectedTo() {
+        System.out.println(group.getName() + " CONNECTIONS: " + groupOutputMap.keySet());
+        System.out.println(
+                group.getName() + " ROVERS-IM-CONNECTED-TO: " + groupOutputMap.keySet().size());
+    }
+
+    public void displayShareScience() {
+        System.out.println(
+                group.getName() + " SCIENCES-SHARED-TO-ME: " + toProtocolString(getShareScience()));
+        System.out.println(
+                group.getName() + " TOTAL-SCIENCE-SHARED-TO-ME: " + getShareScience().size());
     }
 
     private List<Group> removeSelfFromGroups(List<Group> groups) {
-        List<Group> groups_without_me = new ArrayList<Group>();
+        List<Group> groupsWithoutMe = new ArrayList<Group>();
         for (Group g : groups) {
-            if (!g.getName().equals(rover_name)) {
-                groups_without_me.add(g);
+            if (!g.getName().equals(group.getName())) {
+                groupsWithoutMe.add(g);
             }
         }
-        return groups_without_me;
+        return groupsWithoutMe;
     }
 
     @Override
-
     public void run() {
 
         /* Will try to connect to all the ROVERs on a separate Thread. Add them
          * to a list if connection is successful. */
-        for (Group group : groups_list) {
+        for (Group group : groupList) {
 
             new Thread(() -> {
-                final int MAX_ATTEMPTS = 10;
+                final int MAX_ATTEMPTS = 60;
                 int attempts = 0;
                 Socket socket = null;
 
                 do {
                     try {
                         socket = new Socket(group.getIp(), group.getPort());
-                        group_output_map.put(group, new DataOutputStream(socket.getOutputStream()));
-                        System.out.println(rover_name + " CONNECTED TO " + group);
+                        groupOutputMap.put(group, new DataOutputStream(socket.getOutputStream()));
+                        System.out.println(group.getName() + " CONNECTED TO " + group);
                     } catch (Exception e) {
-                        /* Do nothing. */
+                        attempts++;
                     }
                 } while (socket == null && attempts <= MAX_ATTEMPTS);
             }).start();
@@ -141,18 +175,18 @@ public class RoverCommunication implements Runnable, Detector, Sender {
         return sb.toString();
     }
 
-    /** @param detected_sciences
+    /** @param detectedSciences
      *            The science that your ROVER found on its scanned map
      * @return A list of Coordinates that are new. Will compare the
      *         detected_sciences list with the ALL the science the ROVER has
      *         discovered. The result , what this method is returning, is the
      *         difference between detected_sciences and all the sciences
      *         discovered so far by the ROVER */
-    private List<Coord> updateDiscoveries(List<Coord> detected_sciences) {
+    public List<Coord> updateDiscoveries(List<Coord> detectedSciences) {
         List<Coord> new_sciences = new ArrayList<Coord>();
-        for (Coord c : detected_sciences) {
-            if (!discovered_science.contains(c)) {
-                discovered_science.add(c);
+        for (Coord c : detectedSciences) {
+            if (!discoveredSciences.contains(c)) {
+                discoveredSciences.add(c);
                 new_sciences.add(c);
             }
         }
@@ -160,10 +194,10 @@ public class RoverCommunication implements Runnable, Detector, Sender {
     }
 
     @Override
-    public void shareScience(List<DataOutputStream> output_streams, Coord coord) throws IOException {
-        for (DataOutputStream dos : output_streams) {
+    public void shareScience(List<DataOutputStream> outputStreams, Coord coord) throws IOException {
+        for (DataOutputStream dos : outputStreams) {
             dos.writeBytes(coord.toProtocol() + "\n");
+            dos.flush();
         }
     }
-
 }
