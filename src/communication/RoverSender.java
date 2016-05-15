@@ -10,7 +10,7 @@ import common.Coord;
  * of science to other ROVERS.
  * 
  * @author Shay */
-public class RoverChatSender implements Sender {
+public class RoverSender implements Sender {
 
     @Override
     public void shareScience(List<DataOutputStream> output_streams, Coord coord) throws IOException {

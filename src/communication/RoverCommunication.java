@@ -20,12 +20,12 @@ public class RoverCommunication implements Runnable, Detector, Sender {
     private Map<Group, DataOutputStream> group_output_map;
     private List<Coord> discovered_science;
     private List<Group> groups_list;
-    private String rover_name;
+    private Group group;
 
-    public RoverCommunication(String rover_name, List<Group> groups) {
+    public RoverCommunication(Group group, List<Group> groups) {
         group_output_map = new HashMap<Group, DataOutputStream>();
         discovered_science = new ArrayList<Coord>();
-        this.rover_name = rover_name;
+        this.group = group;
 
         groups_list = removeSelfFromGroups(groups);
     }
@@ -83,19 +83,19 @@ public class RoverCommunication implements Runnable, Detector, Sender {
     }
 
     private void displayAllDiscoveries() {
-        System.out.println(rover_name + " SCIENCE-DISCOVERED-BY-ME: " + toProtocolString(discovered_science));
-        System.out.println(rover_name + " TOTAL-NUMBER-OF-SCIENCE-DISCOVERED-BY-ME: " + discovered_science.size());
+        System.out.println(group.getName() + " SCIENCE-DISCOVERED-BY-ME: " + toProtocolString(discovered_science));
+        System.out.println(group.getName() + " TOTAL-NUMBER-OF-SCIENCE-DISCOVERED-BY-ME: " + discovered_science.size());
     }
 
     private void displayConnections() {
-        System.out.println(rover_name + " CONNECTED TO: " + group_output_map.size() + " ROVERS");
-        System.out.println(rover_name + " CONNECTIONS: " + group_output_map.keySet());
+        System.out.println(group.getName() + " CONNECTED TO: " + group_output_map.size() + " ROVERS");
+        System.out.println(group.getName() + " CONNECTIONS: " + group_output_map.keySet());
     }
 
     private List<Group> removeSelfFromGroups(List<Group> groups) {
         List<Group> groups_without_me = new ArrayList<Group>();
         for (Group g : groups) {
-            if (!g.getName().equals(rover_name)) {
+            if (!g.getName().equals(group.getName())) {
                 groups_without_me.add(g);
             }
         }
@@ -119,7 +119,7 @@ public class RoverCommunication implements Runnable, Detector, Sender {
                     try {
                         socket = new Socket(group.getIp(), group.getPort());
                         group_output_map.put(group, new DataOutputStream(socket.getOutputStream()));
-                        System.out.println(rover_name + " CONNECTED TO " + group);
+                        System.out.println(group.getName() + " CONNECTED TO " + group);
                     } catch (Exception e) {
                         /* Do nothing. */
                     }

@@ -70,7 +70,8 @@ public class ROVER_01 {
 		// this should be a safe but slow timer value
 		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
 		
-		rocom = new RoverCommunication(rovername, Group.BLUE_GATHERERS(SERVER_ADDRESS));
+		Group group = new Group(rovername, SERVER_ADDRESS, 53701);
+		rocom = new RoverCommunication(group, Group.BLUE_GATHERERS(SERVER_ADDRESS));
 	}
 	
 	public ROVER_01(String serverAddress) {
@@ -80,7 +81,8 @@ public class ROVER_01 {
 		SERVER_ADDRESS = serverAddress;
 		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
 		
-		rocom = new RoverCommunication(rovername, Group.BLUE_GATHERERS(SERVER_ADDRESS));
+		Group group = new Group(rovername, SERVER_ADDRESS, 53701);
+        rocom = new RoverCommunication(group, Group.BLUE_GATHERERS(SERVER_ADDRESS));
 	}
 
 // development of scanning 7*7 matrix ends here
