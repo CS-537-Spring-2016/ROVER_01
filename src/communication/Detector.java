@@ -29,6 +29,6 @@ public interface Detector {
      *            see to each Direction. Since your ROVER is in the middle of
      *            the Scanned Map, it can only see 3 or 5 tiles NORTH, EAST,
      *            WEST, OR SOUTH
-     * @return */
+     * @return A list of all the science detected in the scanned map. */
     List<Coord> detectScience(MapTile[][] map, Coord rover_coord, int sight_range);
 }

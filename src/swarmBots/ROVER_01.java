@@ -11,6 +11,8 @@ import com.google.gson.reflect.TypeToken;
 import common.Coord;
 import common.MapTile;
 import common.ScanMap;
+import communication.Group;
+import communication.RoverCommunication;
 import enums.Terrain;
 
 /**
@@ -39,6 +41,9 @@ public class ROVER_01 {
 	//rover initial direction
 	String direction = east;
     
+	/* Communication Module*/
+	RoverCommunication rocom;
+	
 //	public ROVER_01() {
 //		// constructor
 //		System.out.println("ROVER_01 rover object constructed");
@@ -64,6 +69,8 @@ public class ROVER_01 {
 		SERVER_ADDRESS = "localhost";
 		// this should be a safe but slow timer value
 		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
+		
+		rocom = new RoverCommunication(rovername, Group.BLUE_GATHERERS(SERVER_ADDRESS));
 	}
 	
 	public ROVER_01(String serverAddress) {
@@ -72,6 +79,8 @@ public class ROVER_01 {
 		rovername = "ROVER_01";
 		SERVER_ADDRESS = serverAddress;
 		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
+		
+		rocom = new RoverCommunication(rovername, Group.BLUE_GATHERERS(SERVER_ADDRESS));
 	}
 
 // development of scanning 7*7 matrix ends here
@@ -180,6 +189,10 @@ public class ROVER_01 {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
 			
+            /* attempts to connects to every gather ROVERS */
+            rocom.run();
+            /* ********************************************/
+            
 			// Process all messages from server, wait until server requests Rover ID
 			// name - Return Rover Name to complete connection
 			while (true) {
@@ -264,7 +277,7 @@ public class ROVER_01 {
 	            }
 				if (line.startsWith("LOC")) {
 					// loc = line.substring(4);
-					currentLoc = extractLocationFromString(line);	
+					currentLoc = extractLocationFromString(line);
 				}
 				System.out.println(rovername + " currentLoc at start: " + currentLoc);
 				
@@ -324,7 +337,10 @@ public class ROVER_01 {
 				System.out.println("ROVER_01 blocked test " + blocked);
 	
 				// TODO - logic to calculate where to move next
-	
+				
+                /* ********* Detect and Share Science ***************/
+                rocom.detectAndShare(scanMap.getScanMap(), currentLoc, 3);
+                /* *************************************************/
 				
 				// this is the Rovers HeartBeat, it regulates how fast the Rover cycles through the control loop
 				Thread.sleep(sleepTime);
