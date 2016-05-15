@@ -15,10 +15,17 @@ public class Coord {
     boolean hasRover;
     Science science;
 	
-	@Override
-	public String toString() {
-		  return terrain + " " + science + " " + xpos + " " + ypos;
-	}
+    @Override
+    public String toString() {
+        return "Coord [xpos=" + xpos + ", ypos=" + ypos + "]";
+    }
+    
+    /** @return String that can be used to send to other ROVERS. This string
+     *         follows the communication protocol: TERRAIN SCIENCE XPOS YPOS
+     * @author Shay */
+    public String toProtocol() {
+        return terrain + " " + science + " " + xpos + " " + ypos;
+    }
 
 	public Coord(int x, int y){
 		this.xpos = x;
