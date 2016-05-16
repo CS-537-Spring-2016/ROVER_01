@@ -29,7 +29,6 @@ public class RoverCommunication implements Runnable, Detector, Sender {
         groupOutputMap = new HashMap<Group, DataOutputStream>();
         discoveredSciences = new ArrayList<Coord>();
         this.group = group;
-
         groupList = removeSelfFromGroups(groups);
         receiver = new RoverReceiver();
     }
@@ -132,6 +131,7 @@ public class RoverCommunication implements Runnable, Detector, Sender {
         for (Group g : groups) {
             if (!g.getName().equals(group.getName())) {
                 groupsWithoutMe.add(g);
+
             }
         }
         return groupsWithoutMe;
