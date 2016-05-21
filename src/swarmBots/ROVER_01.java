@@ -305,6 +305,11 @@ public class ROVER_01 {
 		}
 			counter ++;
 			move(direction);
+			if(counter == 5)
+			{
+				counter = 0;
+				direction = changeRoverDirection(direction);
+			}
 		}
 		else
 		{
@@ -330,11 +335,11 @@ public class ROVER_01 {
 			counter++;
 			move(direction);
 		}
-		/*if(counter == 5)
+		if(counter == 5)
 		{
 			counter = 0;
 			direction = changeRoverDirection(direction);
-		}*/
+		}
 	}
 		
 	private void run() throws IOException, InterruptedException {
