@@ -35,7 +35,7 @@ public class ROVER_01 {
 	String rovername;
 	ScanMap scanMap;
 	int sleepTime;
-	String SERVER_ADDRESS = "localhost";
+	String SERVER_ADDRESS = "localhost";//192.168.1.106";
 	static final int PORT_ADDRESS = 9537;
 	int counter = 0;
 	
@@ -50,6 +50,8 @@ public class ROVER_01 {
     
 	/* Communication Module*/
 	RoverCommunication rocom;
+	
+	Boolean blocked = false;
 	
 //	public ROVER_01() {
 //		// constructor
@@ -150,11 +152,83 @@ public class ROVER_01 {
 	}
 //this function will scan the map tiles if there is a sand or not?	
 
-//movement of rover
-	public void roverMovement(MapTile[][] scanMapTiles, Coord currentLoc) throws IOException, InterruptedException
+	//move 10 times in a random direction when blocked
+	public void moveRandomDirection(MapTile[][] scanMapTiles)
 	{
 		int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
+		while (!checkValidityOfMove(scanMapTiles, direction)) {
+
+			direction = changeRoverDirection(direction);
+			
+		}
+		if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
+			System.out.println("ROVER_01 request GATHER");
+			out.println("GATHER");
+		}
+		move(direction);
+	}
+	
+	//move towards target location
+	public void moveTowardsTargetLocation(MapTile[][] scanMapTiles)
+	{
+		int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
+		
 		if(checkValidityOfMove(scanMapTiles, direction))
+		{
+			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
+				System.out.println("ROVER_01 request GATHER");
+				out.println("GATHER");
+			}
+			//counter ++;
+			move(direction);
+		}
+		else
+		{
+			moveRandomDirection(scanMapTiles);
+			blocked = true;
+			/*while (!checkValidityOfMove(scanMapTiles, direction)) {
+
+				direction = changeRoverDirection(direction);
+				
+			}
+			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
+				System.out.println("ROVER_01 request GATHER");
+				out.println("GATHER");
+			}
+			move(direction);*/
+		}
+	}
+//movement of rover
+	public void roverMovement(MapTile[][] scanMapTiles, Coord currentLoc, Coord targetLocation) throws IOException, InterruptedException
+	{
+		int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
+		int currentXPosition = currentLoc.xpos;
+		int currentYPosition = currentLoc.ypos;
+		int targetXPosition = targetLocation.xpos;
+		int targetYPosition = targetLocation.ypos;
+		if(currentXPosition == targetXPosition)//check less than x and y)
+		{
+			if(currentYPosition  < targetYPosition) direction = south;
+			else direction = north;
+		}
+		else if (currentYPosition == targetYPosition)//x are equal and y is greater and lesser)
+		{
+			if(currentXPosition < targetXPosition) direction = east;
+			else direction = west;
+			//
+		}
+		else if (currentXPosition != targetXPosition)
+		{
+			if(currentXPosition > targetXPosition) direction = west;
+			else direction = east;
+		}
+		else if(currentYPosition != targetYPosition)
+		{
+			if(currentYPosition > targetYPosition) direction = north;
+			else direction = south;
+		}
+		moveTowardsTargetLocation(scanMapTiles);
+		/*if(checkValidityOfMove(scanMapTiles, direction))
 		{
 			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
 				System.out.println("ROVER_01 request GATHER");
@@ -174,7 +248,7 @@ public class ROVER_01 {
 				out.println("GATHER");
 			}
 			move(direction);
-		}
+		}*/
 		/*if(counter == 5)
 		{
 			counter = 0;
@@ -267,7 +341,7 @@ public class ROVER_01 {
 			boolean goingSouth = false;
 			boolean stuck = false; // just means it did not change locations between requests,
 									// could be velocity limit or obstruction etc.
-			boolean blocked = false;
+			//boolean blocked = false;
 	
 			String[] cardinals = new String[4];
 			cardinals[0] = "N";
@@ -331,7 +405,20 @@ public class ROVER_01 {
 				MapTile[][] scanMapTiles = scanMap.getScanMap();
 				
 				//FUNCTION THAT CALL MOVEMENT OF THE ROVER
-				roverMovement(scanMapTiles, currentLoc);
+				if(blocked == true)
+				{
+					for(int i = 1; i <= 10; i++)
+					{
+						moveRandomDirection(scanMapTiles);
+						if(i == 10)
+						{
+							blocked = false;
+							break;
+						}
+					}
+				}
+				else
+					roverMovement(scanMapTiles, currentLoc,targetLocation);
 				
 				
 				
@@ -530,7 +617,7 @@ public class ROVER_01 {
 	 * Runs the client
 	 */
 	public static void main(String[] args) throws Exception {
-		ROVER_01 client = new ROVER_01();
+		ROVER_01 client = new ROVER_01();//192.168.1.106");
 		client.run();
 	}
 }
