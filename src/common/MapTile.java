@@ -1,6 +1,5 @@
 package common;
 
-import enums.RoverName;
 import enums.Science;
 import enums.Terrain;
 

@@ -1,7 +1,6 @@
 package common;
 
 import java.awt.Color;
-import java.awt.geom.Line2D;
 
 public class LineSegment {
 	public int X1;

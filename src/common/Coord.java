@@ -1,6 +1,5 @@
 package common;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import enums.Science;
@@ -9,8 +8,8 @@ import enums.Terrain;
 public class Coord {
 	// thanks to this posting http://stackoverflow.com/questions/27581/what-issues-should-be-considered-when-overriding-equals-and-hashcode-in-java
 	
-	public final int xpos;
-	public final int ypos;
+	public int xpos;
+	public int ypos;
 	public Terrain terrain;
     public boolean hasRover;
     public Science science;

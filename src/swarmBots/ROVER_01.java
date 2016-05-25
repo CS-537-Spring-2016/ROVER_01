@@ -1,12 +1,8 @@
 package swarmBots;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Random;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -47,12 +43,13 @@ public class ROVER_01 {
 	
 	//rover initial direction
 	String direction = east;
-    
-	/* Communication Module*/
-	RoverCommunication rocom;
 	
+
 	Boolean blocked = false;
-	
+	/* Communication Module*/
+    RoverCommunication rocom;
+    
+
 //	public ROVER_01() {
 //		// constructor
 //		System.out.println("ROVER_01 rover object constructed");
@@ -266,25 +263,23 @@ public class ROVER_01 {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
 			
+			
             // ******************* SET UP COMMUNICATION MODULE by Shay *********************
-			/* Your Group Info*/
+            /* Your Group Info*/
             Group group = new Group(rovername, SERVER_ADDRESS, 53701, RoverDriveType.WALKER,
                     RoverToolType.DRILL, RoverToolType.SPECTRAL_SENSOR);
 
             /* Setup communication, only communicates with gatherers */
-            rocom = new RoverCommunication(group,
-                    Group.getGatherers(Group.blueCorp(SERVER_ADDRESS)));
+            rocom = new RoverCommunication(group);
+            rocom.setGroupList(Group.getGatherers());
 
-            /* Can't go on sand, thus ignore any SCIENCE COORDS that is on SAND */
-            rocom.getReceiver().ignoreTerrains(Terrain.SAND);
-
-            /* Connect to the other ROVERS */
-            rocom.run();
+            /* Can't go on ROCK, thus ignore any SCIENCE COORDS that is on ROCK */
+            rocom.ignoreTerrain(Terrain.ROCK);
 
             /* Start your server, receive incoming message from other ROVERS */
             rocom.startServer();
             // ******************************************************************
-            
+	
 			// Process all messages from server, wait until server requests Rover ID
 			// name - Return Rover Name to complete connection
 			while (true) {
@@ -383,6 +378,7 @@ public class ROVER_01 {
 				// prints the scanMap to the Console output for debug purposes
 				scanMap.debugPrintMap();
 				
+
 				// ***** get TIMER remaining *****
 				out.println("TIMER");
 				line = in.readLine();
@@ -441,7 +437,8 @@ public class ROVER_01 {
 				//System.out.println("ROVER_01 stuck test " + stuck);
 				System.out.println("ROVER_01 blocked test " + blocked);
 	
-				// TODO - logic to calculate where to move next
+				// logic to calculate where to move next
+				
 				
                 /* ********* Detect and Share Science ***************/
                 rocom.detectAndShare(scanMap.getScanMap(), currentLoc, 3);
@@ -455,7 +452,7 @@ public class ROVER_01 {
 		
 		// This catch block closes the open socket connection to the server
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} finally {
 	        if (socket != null) {
