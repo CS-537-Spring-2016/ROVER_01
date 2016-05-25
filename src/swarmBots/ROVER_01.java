@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import common.Coord;
 import common.MapTile;
 import common.ScanMap;
+import communication.Detector;
 import communication.Group;
 import communication.RoverCommunication;
 import enums.RoverDriveType;
@@ -35,16 +36,21 @@ public class ROVER_01 {
 	static final int PORT_ADDRESS = 9537;
 	int counter = 0;
 	
-	//this variables are used for moving the rover
+	//this variables are used for moving the rover g
 	String east = "E";
 	String west = "W";
 	String north = "N";
 	String south = "S";
 	
-	//rover initial direction
+	//rover initial direction g
 	String direction = east;
+	int blockedCounter = 0;
+	// coordinates for crystals g
+	List<Coord> crystalCoordinates = new ArrayList<Coord>();
 	
-
+	//targetLocation g
+	Coord targetLocationCrystal = null;
+	
 	Boolean blocked = false;
 	/* Communication Module*/
     RoverCommunication rocom;
@@ -89,7 +95,33 @@ public class ROVER_01 {
 	/**
 	 * Connects to the server then enters the processing loop.
 	 */
-
+	//detecting crystal and adding target locations of crystals
+	 public void detectCrystalScience(MapTile[][] scanMapTiles, Coord currentLoc) 
+	 {       
+		 int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
+		 int xPos = currentLoc.xpos - centerIndex;
+		 int yPos = currentLoc.ypos - centerIndex;
+		 int scienceXPosition, scienceYPosition;
+	     for (int x = 0; x < scanMapTiles.length; x++) 
+	     {
+            for (int y = 0; y < scanMapTiles.length; y++) 
+            {
+                if (scanMapTiles[x][y].getScience() == Science.CRYSTAL) 
+                {
+                	//as we have only drill with spectral sensor, we will get only crystal in rock and gravel which is nearest to us
+                	if( scanMapTiles[x][y].getTerrain() == Terrain.ROCK || scanMapTiles[x][y].getTerrain() == Terrain.GRAVEL || scanMapTiles[x][y].getTerrain() == Terrain.SOIL)
+                 	{
+                		scienceXPosition = xPos + x;
+                    	scienceYPosition = yPos + y;
+		                Coord coord = new Coord(scanMapTiles[x][y].getTerrain(), scanMapTiles[x][y].getScience(),
+		                		scienceXPosition, scienceYPosition);
+		                crystalCoordinates.add(coord);
+                	}
+                }
+            }
+	     }
+	 }
+	
 //move the rover
 	public void move(String direction)
 	{
@@ -166,7 +198,7 @@ public class ROVER_01 {
 	}
 	
 	//move towards target location
-	public void moveTowardsTargetLocation(MapTile[][] scanMapTiles)
+	public void moveTowardsTargetLocation(MapTile[][] scanMapTiles,  Coord currentLoc)
 	{
 		int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
 		
@@ -178,6 +210,7 @@ public class ROVER_01 {
 			}
 			//counter ++;
 			move(direction);
+			detectCrystalScience(scanMapTiles, currentLoc);
 		}
 		else
 		{
@@ -201,8 +234,10 @@ public class ROVER_01 {
 		int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
 		int currentXPosition = currentLoc.xpos;
 		int currentYPosition = currentLoc.ypos;
-		int targetXPosition = targetLocation.xpos;
-		int targetYPosition = targetLocation.ypos;
+		int targetXPosition,targetYPosition;
+		targetXPosition = targetLocation.xpos;
+		targetYPosition = targetLocation.ypos;
+		
 		if(currentXPosition == targetXPosition)//check less than x and y)
 		{
 			if(currentYPosition  < targetYPosition) direction = south;
@@ -224,7 +259,7 @@ public class ROVER_01 {
 			if(currentYPosition > targetYPosition) direction = north;
 			else direction = south;
 		}
-		moveTowardsTargetLocation(scanMapTiles);
+		moveTowardsTargetLocation(scanMapTiles, currentLoc);
 		/*if(checkValidityOfMove(scanMapTiles, direction))
 		{
 			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
@@ -392,7 +427,22 @@ public class ROVER_01 {
 					System.out.println(rovername + " timeRemaining: " + timeRemaining);
 				}
 				
-				
+				//getting the target locaiton of crystal if any
+				if(crystalCoordinates.size() > 0)
+				{
+					for(int i = 0 ; i <= crystalCoordinates.size(); i++)
+					{
+						targetLocationCrystal = crystalCoordinates.get(i);
+						crystalCoordinates.remove(i);
+								
+					}/*
+					for(Coord crystalCoord : crystalCoordinates)
+					{
+						targetLocationCrystal = crystalCoord;
+					}*/
+				}
+				else
+					targetLocationCrystal = targetLocation; 
 	
 				
 				// ***** MOVING *****
@@ -406,15 +456,12 @@ public class ROVER_01 {
 					for(int i = 1; i <= 10; i++)
 					{
 						moveRandomDirection(scanMapTiles);
-						if(i == 10)
-						{
-							blocked = false;
-							break;
-						}
+						
 					}
+					blocked = false;
 				}
 				else
-					roverMovement(scanMapTiles, currentLoc,targetLocation);
+					roverMovement(scanMapTiles, currentLoc,targetLocationCrystal);
 				
 				
 				
