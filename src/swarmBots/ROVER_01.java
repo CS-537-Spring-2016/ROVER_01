@@ -50,12 +50,11 @@ public class ROVER_01 {
 
 	Coord targetLocationCrystal = null; //targetLocation where Rover will move towards g
 
-	Boolean blocked = false;
+	Boolean blocked = false; // Rover in not blocked initially
 	
 	/* Communication Module*/
 	RoverCommunication rocom;
     
-
 //	public ROVER_01() {
 //		// constructor
 //		System.out.println("ROVER_01 rover object constructed");
@@ -73,50 +72,48 @@ public class ROVER_01 {
 //		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
 //	}
 	
-	
-	public ROVER_01() {
-		// constructor
+	public ROVER_01() {	//Constructor for Rover class
 		System.out.println("ROVER_01 rover object constructed");
 		rovername = "ROVER_01";
 		SERVER_ADDRESS = "localhost";
-		// this should be a safe but slow timer value
-		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
+		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small. This value should be a safe but slow timer value
+	
 	}
 	
-	public ROVER_01(String serverAddress) {
-		// constructor
+	public ROVER_01(String serverAddress) { // Constructor Overload
 		System.out.println("ROVER_01 rover object constructed");
 		rovername = "ROVER_01";
 		SERVER_ADDRESS = serverAddress;
 		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
 	}
 
-// development of scanning 7*7 matrix ends here
 	/**
+	 * development of scanning 7*7 matrix ends here
 	 * Connects to the server then enters the processing loop.
 	 */
-	//detecting crystal and adding target locations of crystals
+
+	// Detect crystal and add target locations of crystals
 	 public void detectCrystalScience(MapTile[][] scanMapTiles, Coord currentLoc) 
 	 {       
-		 int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
-		 int xPos = currentLoc.xpos - centerIndex;
-		 int yPos = currentLoc.ypos - centerIndex;
+		 int centerIndex = (scanMap.getEdgeSize() - 1) / 2; // The position of Rover in 7*7 Scanner Map
+		 int xPos = currentLoc.xpos - centerIndex; // X - Co-ordinate of Rover 
+		 int yPos = currentLoc.ypos - centerIndex; // y - Co-ordinate of Rover
 		 int scienceXPosition, scienceYPosition;
-	     for (int x = 0; x < scanMapTiles.length; x++) 
-	     {
-            for (int y = 0; y < scanMapTiles.length; y++) 
-            {
-                if (scanMapTiles[x][y].getScience() == Science.CRYSTAL) 
-                {
+		 for (int x = 0; x < scanMapTiles.length; x++) // Scanning Map
+	     	 {
+	            for (int y = 0; y < scanMapTiles.length; y++) 
+	            {
+	                if (scanMapTiles[x][y].getScience() == Science.CRYSTAL)  // if the MapTile contains Crystals
+	                {
                 	//as we have only drill with spectral sensor, we will get only crystal in rock and gravel which is nearest to us
-                	if( scanMapTiles[x][y].getTerrain() == Terrain.ROCK || scanMapTiles[x][y].getTerrain() == Terrain.GRAVEL || scanMapTiles[x][y].getTerrain() == Terrain.SOIL)
-                 	{
-                		scienceXPosition = xPos + x;
-                    	scienceYPosition = yPos + y;
-		                Coord coord = new Coord(scanMapTiles[x][y].getTerrain(), scanMapTiles[x][y].getScience(),
-		                		scienceXPosition, scienceYPosition);
-		                crystalCoordinates.add(coord);
-                	}
+	                	if( scanMapTiles[x][y].getTerrain() == Terrain.ROCK || scanMapTiles[x][y].getTerrain() == Terrain.GRAVEL || scanMapTiles[x][y].getTerrain() == Terrain.SOIL)
+	                 	{
+	                		scienceXPosition = xPos + x;
+		                    	scienceYPosition = yPos + y;
+			                Coord coord = new Coord(scanMapTiles[x][y].getTerrain(), scanMapTiles[x][y].getScience(),
+			                		scienceXPosition, scienceYPosition);
+			                crystalCoordinates.add(coord);
+	                	}
                 }
             }
 	     }
