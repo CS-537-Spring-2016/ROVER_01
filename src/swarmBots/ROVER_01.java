@@ -36,6 +36,9 @@ public class ROVER_01 {
 	static final int PORT_ADDRESS = 9537;
 	int counter = 0;
 	
+	Coord currentLoc = null;
+	Coord previousLoc = null;
+	
 	//this variables are used for moving the rover g
 	String east = "E";
 	String west = "W";
@@ -198,7 +201,7 @@ public class ROVER_01 {
 	}
 	
 	//move towards target location
-	public void moveTowardsTargetLocation(MapTile[][] scanMapTiles,  Coord currentLoc)
+	public void moveTowardsTargetLocation(MapTile[][] scanMapTiles,  Coord currentLoc) throws IOException, InterruptedException
 	{
 		int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
 		
@@ -212,6 +215,7 @@ public class ROVER_01 {
 			move(direction);
 			detectCrystalScience(scanMapTiles, currentLoc);
 		}
+		
 		else
 		{
 			moveRandomDirection(scanMapTiles);
@@ -259,7 +263,10 @@ public class ROVER_01 {
 			if(currentYPosition > targetYPosition) direction = north;
 			else direction = south;
 		}
+
+			
 		moveTowardsTargetLocation(scanMapTiles, currentLoc);
+		
 		/*if(checkValidityOfMove(scanMapTiles, direction))
 		{
 			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
@@ -286,6 +293,38 @@ public class ROVER_01 {
 			counter = 0;
 			direction = changeRoverDirection(direction);
 		}*/
+	}
+	
+	public void Movement(MapTile[][] scanMapTiles, Coord currentLoc) throws IOException, InterruptedException
+	{
+		detectCrystalScience(scanMapTiles, currentLoc);
+		int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
+		if(checkValidityOfMove(scanMapTiles, direction))
+		{
+			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
+				System.out.println("ROVER_01 request GATHER");
+				out.println("GATHER");
+			}
+			
+			move(direction);
+			
+		}
+		else
+		{
+			while (!checkValidityOfMove(scanMapTiles, direction)) {
+
+				direction = changeRoverDirection(direction);
+				counter=0;
+			}
+			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
+				System.out.println("ROVER_01 request GATHER");
+				out.println("GATHER");
+			}
+	
+			
+			move(direction);
+		}
+		
 	}
 		
 	private void run() throws IOException, InterruptedException {
@@ -380,8 +419,7 @@ public class ROVER_01 {
 			cardinals[3] = "W";
 	
 			String currentDir = cardinals[0];
-			Coord currentLoc = null;
-			Coord previousLoc = null;
+
 	
 
 			/**
@@ -480,6 +518,10 @@ public class ROVER_01 {
 	
 				// test for stuckness
 				stuck = currentLoc.equals(previousLoc);
+				 if(stuck==true)
+				 {
+					 Movement(scanMapTiles, currentLoc);
+				 }
 	
 				//System.out.println("ROVER_01 stuck test " + stuck);
 				System.out.println("ROVER_01 blocked test " + blocked);
