@@ -105,30 +105,29 @@ public class ROVER_01 {
 	            {
 	                if (scanMapTiles[x][y].getScience() == Science.CRYSTAL)  // if the MapTile contains Crystals
 	                {
-                	//as we have only drill with spectral sensor, we will get only crystal in rock and gravel which is nearest to us
+                		//as we have only drill with spectral sensor, we will get only crystal in rock and gravel which is nearest to us
 	                	if( scanMapTiles[x][y].getTerrain() == Terrain.ROCK || scanMapTiles[x][y].getTerrain() == Terrain.GRAVEL || scanMapTiles[x][y].getTerrain() == Terrain.SOIL)
 	                 	{
 	                		scienceXPosition = xPos + x;
 		                    	scienceYPosition = yPos + y;
 			                Coord coord = new Coord(scanMapTiles[x][y].getTerrain(), scanMapTiles[x][y].getScience(),
 			                		scienceXPosition, scienceYPosition);
-			                crystalCoordinates.add(coord);
+			                crystalCoordinates.add(coord); // Adding reachable Science in a list to collect 
 	                	}
-                }
-            }
-	     }
+        		}
+            	    }
+	     	}
 	 }
 	
-//move the rover
+	// Moving the rover
 	public void move(String direction)
 	{
 		out.println("GATHER");
 		out.println("MOVE " + direction);
 	}
 	
-//change direction of rover is next move is a sand, wall or a rover
-
-//this function will move the rover randomly in the east,west,north or south direction.	
+	//change direction of rover is next move is a sand, wall or a rover
+	//this function will move the rover randomly in the east,west,north or south direction.	
 	public String changeRoverDirection(String direction)
 	{
 		ArrayList<String> directions = new ArrayList<String>();
