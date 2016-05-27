@@ -27,23 +27,23 @@ import enums.Terrain;
 
 public class ROVER_01 {
 
-	BufferedReader in;
-	PrintWriter out;
-	String rovername;
-	ScanMap scanMap;
-	int sleepTime;
-	String SERVER_ADDRESS = "localhost";//192.168.1.106";
+	BufferedReader in; //Read from Stream
+	PrintWriter out; // Write to Stream
+	String rovername; // UNique identifier for Rover
+	ScanMap scanMap; // Map Variable
+	int sleepTime; // for timer
+	String SERVER_ADDRESS = "localhost"; //192.168.1.106";
 	static final int PORT_ADDRESS = 9537;
 	int counter = 0;
 	
-	//this variables are used for moving the rover g
-	String east = "E";
+
+	// Direction Variables
+	String east = "E"; 
 	String west = "W";
 	String north = "N";
 	String south = "S";
 	
-	//rover initial direction g
-	String direction = east;
+	String direction = east; // Initial direction of the Rover
 	int blockedCounter = 0;
 	// coordinates for crystals g
 	List<Coord> crystalCoordinates = new ArrayList<Coord>();
