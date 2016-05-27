@@ -62,22 +62,7 @@ public class ROVER_01 {
 	/* Communication Module*/
 	RoverCommunication rocom;
     
-//	public ROVER_01() {
-//		// constructor
-//		System.out.println("ROVER_01 rover object constructed");
-//		rovername = "ROVER_01";
-//		SERVER_ADDRESS = "localhost";
-//		// this should be a safe but slow timer value
-//		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
-//	}
-//	
-//	public ROVER_01(String serverAddress) {
-//		// constructor
-//		System.out.println("ROVER_01 rover object constructed");
-//		rovername = "ROVER_01";
-//		SERVER_ADDRESS = serverAddress;
-//		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
-//	}
+
 	
 	public ROVER_01() {	//Constructor for Rover class
 		System.out.println("ROVER_01 rover object constructed");
@@ -194,10 +179,7 @@ public class ROVER_01 {
 			direction = changeRoverDirection(direction);
 			
 		}
-		/*if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
-			System.out.println("ROVER_01 request GATHER");
-			out.println("GATHER");
-		}*/
+
 		move(direction);
 	}
 	
@@ -208,11 +190,7 @@ public class ROVER_01 {
 		
 		if(checkValidityOfMove(scanMapTiles, direction))
 		{
-			/*if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
-				System.out.println("ROVER_01 request GATHER");
-				out.println("GATHER");
-			}*/
-			//counter ++;
+
 			detectCrystalScience(scanMapTiles, currentLoc);
 			move(direction);
 			
@@ -222,16 +200,7 @@ public class ROVER_01 {
 		{
 			moveRandomDirection(scanMapTiles);
 			blocked = true;
-			/*while (!checkValidityOfMove(scanMapTiles, direction)) {
-
-				direction = changeRoverDirection(direction);
-				
-			}
-			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
-				System.out.println("ROVER_01 request GATHER");
-				out.println("GATHER");
-			}
-			move(direction);*/
+		
 		}
 	}
 //movement of rover
@@ -269,32 +238,7 @@ public class ROVER_01 {
 			
 		moveTowardsTargetLocation(scanMapTiles, currentLoc);
 		
-		/*if(checkValidityOfMove(scanMapTiles, direction))
-		{
-			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
-				System.out.println("ROVER_01 request GATHER");
-				out.println("GATHER");
-			}
-			//counter ++;
-			move(direction);
-		}
-		else
-		{
-			while (!checkValidityOfMove(scanMapTiles, direction)) {
-
-				direction = changeRoverDirection(direction);
-			}
-			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
-				System.out.println("ROVER_01 request GATHER");
-				out.println("GATHER");
-			}
-			move(direction);
-		}*/
-		/*if(counter == 5)
-		{
-			counter = 0;
-			direction = changeRoverDirection(direction);
-		}*/
+		
 	}
 	
 	public void Movement(MapTile[][] scanMapTiles, Coord currentLoc) throws IOException, InterruptedException
@@ -675,9 +619,7 @@ public class ROVER_01 {
 
 		String jsonScanMapString = jsonScanMap.toString();
 		// debug print json object to a file
-		//new MyWriter( jsonScanMapString, 0);  //gives a strange result - prints the \n instead of newline character in the file
 
-		//System.out.println("ROVER_01 convert from json back to ScanMap class");
 		// convert from the json string back to a ScanMap object
 		scanMap = gson.fromJson(jsonScanMapString, ScanMap.class);		
 	}
