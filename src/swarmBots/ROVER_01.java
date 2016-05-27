@@ -125,6 +125,7 @@ public class ROVER_01 {
 //move the rover
 	public void move(String direction)
 	{
+		out.println("GATHER");
 		out.println("MOVE " + direction);
 	}
 	
@@ -190,10 +191,10 @@ public class ROVER_01 {
 			direction = changeRoverDirection(direction);
 			
 		}
-		if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
+		/*if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
 			System.out.println("ROVER_01 request GATHER");
 			out.println("GATHER");
-		}
+		}*/
 		move(direction);
 	}
 	
@@ -204,13 +205,14 @@ public class ROVER_01 {
 		
 		if(checkValidityOfMove(scanMapTiles, direction))
 		{
-			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
+			/*if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
 				System.out.println("ROVER_01 request GATHER");
 				out.println("GATHER");
-			}
+			}*/
 			//counter ++;
-			move(direction);
 			detectCrystalScience(scanMapTiles, currentLoc);
+			move(direction);
+			
 		}
 		else
 		{
