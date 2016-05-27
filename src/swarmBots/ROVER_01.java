@@ -27,38 +27,41 @@ import enums.Terrain;
 
 public class ROVER_01 {
 
-	BufferedReader in;
-	PrintWriter out;
-	String rovername;
-	ScanMap scanMap;
-	int sleepTime;
-	String SERVER_ADDRESS = "localhost";//192.168.1.106";
+	BufferedReader in; //Read from Stream
+	PrintWriter out; // Write to Stream
+	String rovername; // UNique identifier for Rover
+	ScanMap scanMap; // Map Variable
+	int sleepTime; // for timer
+	String SERVER_ADDRESS = "localhost"; //192.168.1.106";
 	static final int PORT_ADDRESS = 9537;
 	int counter = 0;
 	
+
 	Coord currentLoc = null;
 	Coord previousLoc = null;
 	
 	//this variables are used for moving the rover g
-	String east = "E";
+
+
+
+	// Direction Variables
+	String east = "E"; 
 	String west = "W";
 	String north = "N";
 	String south = "S";
 	
-	//rover initial direction g
-	String direction = east;
+	String direction = east; // Initial direction of the Rover
 	int blockedCounter = 0;
-	// coordinates for crystals g
-	List<Coord> crystalCoordinates = new ArrayList<Coord>();
-	
-	//targetLocation g
-	Coord targetLocationCrystal = null;
-	
-	Boolean blocked = false;
-	/* Communication Module*/
-    RoverCommunication rocom;
-    
 
+	List<Coord> crystalCoordinates = new ArrayList<Coord>(); // Co-ordinates for crystals as the Rover has Spectral Scanner g
+
+	Coord targetLocationCrystal = null; //targetLocation where Rover will move towards g
+
+	Boolean blocked = false; // Rover in not blocked initially
+	
+	/* Communication Module*/
+	RoverCommunication rocom;
+    
 //	public ROVER_01() {
 //		// constructor
 //		System.out.println("ROVER_01 rover object constructed");
@@ -76,64 +79,62 @@ public class ROVER_01 {
 //		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
 //	}
 	
-	
-	public ROVER_01() {
-		// constructor
+	public ROVER_01() {	//Constructor for Rover class
 		System.out.println("ROVER_01 rover object constructed");
 		rovername = "ROVER_01";
 		SERVER_ADDRESS = "localhost";
-		// this should be a safe but slow timer value
-		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
+		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small. This value should be a safe but slow timer value
+	
 	}
 	
-	public ROVER_01(String serverAddress) {
-		// constructor
+	public ROVER_01(String serverAddress) { // Constructor Overload
 		System.out.println("ROVER_01 rover object constructed");
 		rovername = "ROVER_01";
 		SERVER_ADDRESS = serverAddress;
 		sleepTime = 200; // in milliseconds - smaller is faster, but the server will cut connection if it is too small
 	}
 
-// development of scanning 7*7 matrix ends here
 	/**
+	 * development of scanning 7*7 matrix ends here
 	 * Connects to the server then enters the processing loop.
 	 */
-	//detecting crystal and adding target locations of crystals
+
+	// Detect crystal and add target locations of crystals
 	 public void detectCrystalScience(MapTile[][] scanMapTiles, Coord currentLoc) 
 	 {       
-		 int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
-		 int xPos = currentLoc.xpos - centerIndex;
-		 int yPos = currentLoc.ypos - centerIndex;
+		 int centerIndex = (scanMap.getEdgeSize() - 1) / 2; // The position of Rover in 7*7 Scanner Map
+		 int xPos = currentLoc.xpos - centerIndex; // X - Co-ordinate of Rover 
+		 int yPos = currentLoc.ypos - centerIndex; // y - Co-ordinate of Rover
 		 int scienceXPosition, scienceYPosition;
-	     for (int x = 0; x < scanMapTiles.length; x++) 
-	     {
-            for (int y = 0; y < scanMapTiles.length; y++) 
-            {
-                if (scanMapTiles[x][y].getScience() == Science.CRYSTAL) 
-                {
-                	//as we have only drill with spectral sensor, we will get only crystal in rock and gravel which is nearest to us
-                	if( scanMapTiles[x][y].getTerrain() == Terrain.ROCK || scanMapTiles[x][y].getTerrain() == Terrain.GRAVEL || scanMapTiles[x][y].getTerrain() == Terrain.SOIL)
-                 	{
-                		scienceXPosition = xPos + x;
-                    	scienceYPosition = yPos + y;
-		                Coord coord = new Coord(scanMapTiles[x][y].getTerrain(), scanMapTiles[x][y].getScience(),
-		                		scienceXPosition, scienceYPosition);
-		                crystalCoordinates.add(coord);
-                	}
-                }
-            }
-	     }
+		 for (int x = 0; x < scanMapTiles.length; x++) // Scanning Map
+	     	 {
+	            for (int y = 0; y < scanMapTiles.length; y++) 
+	            {
+	                if (scanMapTiles[x][y].getScience() == Science.CRYSTAL)  // if the MapTile contains Crystals
+	                {
+                		//as we have only drill with spectral sensor, we will get only crystal in rock and gravel which is nearest to us
+	                	if( scanMapTiles[x][y].getTerrain() == Terrain.ROCK || scanMapTiles[x][y].getTerrain() == Terrain.GRAVEL || scanMapTiles[x][y].getTerrain() == Terrain.SOIL)
+	                 	{
+	                		scienceXPosition = xPos + x;
+		                    	scienceYPosition = yPos + y;
+			                Coord coord = new Coord(scanMapTiles[x][y].getTerrain(), scanMapTiles[x][y].getScience(),
+			                		scienceXPosition, scienceYPosition);
+			                crystalCoordinates.add(coord); // Adding reachable Science in a list to collect 
+	                	}
+        		}
+            	    }
+	     	}
 	 }
 	
-//move the rover
+	// Moving the rover
 	public void move(String direction)
 	{
+		out.println("GATHER");
 		out.println("MOVE " + direction);
 	}
 	
-//change direction of rover is next move is a sand, wall or a rover
-
-//this function will move the rover randomly in the east,west,north or south direction.	
+	//change direction of rover is next move is a sand, wall or a rover
+	//this function will move the rover randomly in the east,west,north or south direction.	
 	public String changeRoverDirection(String direction)
 	{
 		ArrayList<String> directions = new ArrayList<String>();
@@ -193,10 +194,10 @@ public class ROVER_01 {
 			direction = changeRoverDirection(direction);
 			
 		}
-		if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
+		/*if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
 			System.out.println("ROVER_01 request GATHER");
 			out.println("GATHER");
-		}
+		}*/
 		move(direction);
 	}
 	
@@ -207,13 +208,14 @@ public class ROVER_01 {
 		
 		if(checkValidityOfMove(scanMapTiles, direction))
 		{
-			if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
+			/*if (!scanMapTiles[centerIndex][centerIndex].getScience().getSciString().equals("N")) {
 				System.out.println("ROVER_01 request GATHER");
 				out.println("GATHER");
-			}
+			}*/
 			//counter ++;
-			move(direction);
 			detectCrystalScience(scanMapTiles, currentLoc);
+			move(direction);
+			
 		}
 		
 		else
