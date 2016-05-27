@@ -45,15 +45,15 @@ public class ROVER_01 {
 	
 	String direction = east; // Initial direction of the Rover
 	int blockedCounter = 0;
-	// coordinates for crystals g
-	List<Coord> crystalCoordinates = new ArrayList<Coord>();
-	
-	//targetLocation g
-	Coord targetLocationCrystal = null;
-	
+
+	List<Coord> crystalCoordinates = new ArrayList<Coord>(); // Co-ordinates for crystals as the Rover has Spectral Scanner g
+
+	Coord targetLocationCrystal = null; //targetLocation where Rover will move towards g
+
 	Boolean blocked = false;
+	
 	/* Communication Module*/
-    RoverCommunication rocom;
+	RoverCommunication rocom;
     
 
 //	public ROVER_01() {
