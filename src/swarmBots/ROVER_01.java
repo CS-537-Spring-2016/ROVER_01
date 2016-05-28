@@ -125,20 +125,20 @@ public class ROVER_01 {
 		ArrayList<String> directions = new ArrayList<String>();
 		directions.add("E");directions.add("W");directions.add("N");directions.add("S");
 		Random randomgenerator = new Random();
-		switch(direction)
+		switch(direction) // Move in Random direction
 		{
-		
-		case "E": return directions.get(randomgenerator.nextInt(4));
-		case "W": return directions.get(randomgenerator.nextInt(4));
-		case "N": return directions.get(randomgenerator.nextInt(4));
-		case "S": return directions.get(randomgenerator.nextInt(4));
-		default: return null;
+			case "E": return directions.get(randomgenerator.nextInt(4));
+			case "W": return directions.get(randomgenerator.nextInt(4));
+			case "N": return directions.get(randomgenerator.nextInt(4));
+			case "S": return directions.get(randomgenerator.nextInt(4));
+			default: return null;
 		}
 	}
+
 //validation of the rover is the next move.
 	
-//validty of rover next move
-	public Boolean checkValidityOfMove(MapTile[][] scanMapTiles, String direction)
+	//validty of rover next move
+	public Boolean checkValidityOfMove(MapTile[][] scanMapTiles, String direction)// Check if nexrt move is valid
 	{
 		int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
 		int xpos = centerIndex;
@@ -175,11 +175,8 @@ public class ROVER_01 {
 	{
 		int centerIndex = (scanMap.getEdgeSize() - 1) / 2;
 		while (!checkValidityOfMove(scanMapTiles, direction)) {
-
 			direction = changeRoverDirection(direction);
-			
 		}
-
 		move(direction);
 	}
 	
@@ -190,17 +187,13 @@ public class ROVER_01 {
 		
 		if(checkValidityOfMove(scanMapTiles, direction))
 		{
-
 			detectCrystalScience(scanMapTiles, currentLoc);
 			move(direction);
-			
 		}
-		
 		else
 		{
 			moveRandomDirection(scanMapTiles);
 			blocked = true;
-		
 		}
 	}
 //movement of rover
@@ -234,11 +227,7 @@ public class ROVER_01 {
 			if(currentYPosition > targetYPosition) direction = north;
 			else direction = south;
 		}
-
-			
 		moveTowardsTargetLocation(scanMapTiles, currentLoc);
-		
-		
 	}
 	
 	public void Movement(MapTile[][] scanMapTiles, Coord currentLoc) throws IOException, InterruptedException
@@ -258,7 +247,6 @@ public class ROVER_01 {
 		else
 		{
 			while (!checkValidityOfMove(scanMapTiles, direction)) {
-
 				direction = changeRoverDirection(direction);
 				counter=0;
 			}
@@ -266,8 +254,7 @@ public class ROVER_01 {
 				System.out.println("ROVER_01 request GATHER");
 				out.println("GATHER");
 			}
-	
-			
+
 			move(direction);
 		}
 		
