@@ -32,7 +32,7 @@ public class ROVER_01 {
 	String rovername; // UNique identifier for Rover
 	ScanMap scanMap; // Map Variable
 	int sleepTime; // for timer
-	String SERVER_ADDRESS = "localhost"; //192.168.1.106";
+	String SERVER_ADDRESS = "192.168.1.106";
 	static final int PORT_ADDRESS = 9537;
 	int counter = 0;
 	
@@ -67,7 +67,7 @@ public class ROVER_01 {
 	public ROVER_01() {	//Constructor for Rover class
 		System.out.println("ROVER_01 rover object constructed");
 		rovername = "ROVER_01";
-		SERVER_ADDRESS = "localhost";
+		SERVER_ADDRESS = "192.168.1.106";
 		sleepTime = 300; // in milliseconds - smaller is faster, but the server will cut connection if it is too small. This value should be a safe but slow timer value
 	
 	}
@@ -281,7 +281,7 @@ public class ROVER_01 {
             rocom.setGroupList(Group.getGatherers());
 
             /* Can't go on ROCK, thus ignore any SCIENCE COORDS that is on ROCK */
-            rocom.ignoreTerrain(Terrain.ROCK);
+            rocom.ignoreTerrain(Terrain.SAND);
 
             /* Start your server, receive incoming message from other ROVERS */
             rocom.startServer();
@@ -404,7 +404,7 @@ public class ROVER_01 {
 					for(int i = 0 ; i <= crystalCoordinates.size(); i++)
 					{
 						targetLocationCrystal = crystalCoordinates.get(i);
-						crystalCoordinates.remove(i);
+						//crystalCoordinates.remove(i);
 								
 					}/*
 					for(Coord crystalCoord : crystalCoordinates)
@@ -634,7 +634,7 @@ public class ROVER_01 {
 	 * Runs the client
 	 */
 	public static void main(String[] args) throws Exception {
-		ROVER_01 client = new ROVER_01();//192.168.1.106");
+		ROVER_01 client = new ROVER_01();
 		client.run();
 	}
 }

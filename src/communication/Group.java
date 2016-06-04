@@ -131,7 +131,7 @@ public class Group {
                 RoverToolType.SPECTRAL_SENSOR));
         blueCorp.add(new Group("ROVER_02", ip, 53702, RoverDriveType.WALKER,
                 RoverToolType.RADIATION_SENSOR, RoverToolType.CHEMICAL_SENSOR));
-        blueCorp.add(new Group("ROVER_03", ip/*"192.168.1.107"*/, 53703, RoverDriveType.TREADS, RoverToolType.DRILL,
+        blueCorp.add(new Group("ROVER_03", "192.168.1.107", 53703, RoverDriveType.TREADS, RoverToolType.DRILL,
                 RoverToolType.HARVESTER));
         blueCorp.add(new Group("ROVER_04", ip, 53704, RoverDriveType.WALKER, RoverToolType.DRILL,
                 RoverToolType.RADAR_SENSOR));
@@ -139,7 +139,7 @@ public class Group {
                 RoverToolType.RANGE_BOOSTER, RoverToolType.SPECTRAL_SENSOR));
         blueCorp.add(new Group("ROVER_06", ip, 53706, RoverDriveType.WHEELS,
                 RoverToolType.RANGE_BOOSTER, RoverToolType.RADIATION_SENSOR));
-        blueCorp.add(new Group("ROVER_07", ip, 53707, RoverDriveType.TREADS,
+        blueCorp.add(new Group("ROVER_07", "192.168.1.143", 53707, RoverDriveType.TREADS,
                 RoverToolType.HARVESTER, RoverToolType.RADAR_SENSOR));
         blueCorp.add(new Group("ROVER_08", ip, 53708, RoverDriveType.TREADS,
                 RoverToolType.HARVESTER, RoverToolType.SPECTRAL_SENSOR));
